@@ -17,4 +17,13 @@ class Penyusutan extends Model
         'nilai_residu',
         'penyusutan_per_tahun',
     ];
+
+    /**
+     * Relasi ke Model Barang
+     * Menghubungkan kolom 'barang_id' di tabel penyusutans ke 'id_barang' di tabel barangs
+     */
+    public function barang()
+    {
+        return $this->belongsTo(Barang::class, 'barang_id', 'id_barang');
+    }
 }
