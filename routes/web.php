@@ -24,6 +24,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+// ROUTE DASHBOARD
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
+
 // ROUTE BARANG
 Route::get('/barang', [BarangController::class, 'index'])->name('barang.index');
 Route::get('/barang/create', [BarangController::class, 'create'])->name('barang.create');
