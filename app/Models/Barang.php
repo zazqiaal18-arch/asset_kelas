@@ -17,4 +17,6 @@ class Barang extends Model
         'tanggal_beli',
         'harga_beli',
     ];
+
+    
 }

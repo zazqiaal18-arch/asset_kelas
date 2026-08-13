@@ -20,4 +20,9 @@ class Kerusakan extends Model
         'deskripsi_kerusakan',
         'status',
     ];
+
+    public function barang()
+    {
+        return $this->belongsTo(Barang::class, 'id_barang', 'id_barang');
+    }
 }
