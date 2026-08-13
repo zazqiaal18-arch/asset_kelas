@@ -51,16 +51,6 @@
             <textarea name="deskripsi_kerusakan" required>{{ old('deskripsi_kerusakan') }}</textarea>
         </p>
 
-        <p>
-            <label>Status Perbaikan: </label><br>
-            <select name="status" required>
-                <option value="Dilaporkan">Dilaporkan</option>
-                <option value="Dalam Perbaikan">Dalam Perbaikan</option>
-                <option value="Selesai">Selesai</option>
-                <option value="Afkir/Dibuang">Afkir/Dibuang</option>
-            </select>
-        </p>
-
         <button type="submit">Simpan Laporan</button>
     </form>
 

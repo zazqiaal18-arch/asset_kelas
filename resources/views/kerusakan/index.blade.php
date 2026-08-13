@@ -24,7 +24,6 @@
                 <th>Jumlah Rusak</th>
                 <th>Tingkat</th>
                 <th>Deskripsi</th>
-                <th>Status</th>
                 <th>Aksi</th>
             </tr>
         </thead>
@@ -36,7 +35,6 @@
                     <td>{{ $item->jumlah_rusak }}</td>
                     <td>{{ $item->tingkat_kerusakan }}</td>
                     <td>{{ $item->deskripsi_kerusakan }}</td>
-                    <td><b>{{ $item->status }}</b></td>
                     <td>
                         <a href="{{ route('kerusakan.edit', $item->id_kerusakan) }}">Edit</a> 
                         | 

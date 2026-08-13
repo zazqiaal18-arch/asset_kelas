@@ -27,7 +27,6 @@ class KerusakanController extends Controller
             'jumlah_rusak'        => 'required|integer|min:1',
             'tingkat_kerusakan'   => 'required|in:Ringan,Sedang,Berat',
             'deskripsi_kerusakan' => 'required|string',
-            'status'              => 'required|in:Dilaporkan,Dalam Perbaikan,Selesai,Afkir/Dibuang',
         ]);
 
         Kerusakan::create($request->all());
@@ -49,7 +48,6 @@ class KerusakanController extends Controller
             'jumlah_rusak'        => 'required|integer|min:1',
             'tingkat_kerusakan'   => 'required|in:Ringan,Sedang,Berat',
             'deskripsi_kerusakan' => 'required|string',
-            'status'              => 'required|in:Dilaporkan,Dalam Perbaikan,Selesai,Afkir/Dibuang',
         ]);
 
         $kerusakan = Kerusakan::findOrFail($id_kerusakan);

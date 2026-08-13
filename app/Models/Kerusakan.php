@@ -18,7 +18,6 @@ class Kerusakan extends Model
         'jumlah_rusak',
         'tingkat_kerusakan',
         'deskripsi_kerusakan',
-        'status',
     ];
 
     public function barang()

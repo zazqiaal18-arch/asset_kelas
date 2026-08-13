@@ -53,15 +53,6 @@
             <textarea name="deskripsi_kerusakan" required>{{ old('deskripsi_kerusakan', $kerusakan->deskripsi_kerusakan) }}</textarea>
         </p>
 
-        <p>
-            <label>Status Perbaikan: </label><br>
-            <select name="status" required>
-                <option value="Dilaporkan" {{ $kerusakan->status == 'Dilaporkan' ? 'selected' : '' }}>Dilaporkan</option>
-                <option value="Dalam Perbaikan" {{ $kerusakan->status == 'Dalam Perbaikan' ? 'selected' : '' }}>Dalam Perbaikan</option>
-                <option value="Selesai" {{ $kerusakan->status == 'Selesai' ? 'selected' : '' }}>Selesai</option>
-                <option value="Afkir/Dibuang" {{ $kerusakan->status == 'Afkir/Dibuang' ? 'selected' : '' }}>Afkir/Dibuang</option>
-            </select>
-        </p>
 
         <button type="submit">Update Laporan</button>
     </form>

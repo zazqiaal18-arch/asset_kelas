@@ -19,7 +19,6 @@ class CreateKerusakanTable extends Migration
             $table->integer('jumlah_rusak');
             $table->enum('tingkat_kerusakan', ['Ringan', 'Sedang', 'Berat']);
             $table->text('deskripsi_kerusakan');
-            $table->enum('status', ['Dilaporkan', 'Dalam Perbaikan', 'Selesai', 'Afkir/Dibuang'])->default('Dilaporkan');
             $table->timestamps();
         });
     }
