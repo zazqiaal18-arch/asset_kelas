@@ -6,6 +6,7 @@ use App\Http\Controllers\StokController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\PenyusutanController;
 use App\Http\Controllers\KerusakanController;
+use App\Http\Controllers\DashboardController;
 
 
 /*
@@ -21,7 +22,16 @@ use App\Http\Controllers\KerusakanController;
 
 Route::get('/', function () {
     return view('welcome');
+
 });
+
+//dashboard
+
+// Rute untuk halaman utama (Dashboard)
+Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
+// Atau jika ingin menggunakan URL /dashboard
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 // ROUTE BARANG
 Route::get('/barang', [BarangController::class, 'index'])->name('barang.index');
