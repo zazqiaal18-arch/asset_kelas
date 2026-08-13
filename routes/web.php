@@ -6,6 +6,7 @@ use App\Http\Controllers\StokController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\PenyusutanController;
 use App\Http\Controllers\KerusakanController;
+use App\Http\Controllers\AuthController;
 
 
 /*
@@ -60,3 +61,17 @@ Route::post('/kerusakan', [KerusakanController::class, 'store'])->name('kerusaka
 Route::get('/kerusakan/{id_kerusakan}/edit', [KerusakanController::class, 'edit'])->name('kerusakan.edit');
 Route::put('/kerusakan/{id_kerusakan}', [KerusakanController::class, 'update'])->name('kerusakan.update');
 Route::delete('/kerusakan/{id_kerusakan}', [KerusakanController::class, 'destroy'])->name('kerusakan.destroy');
+
+// 6. ROUTE LOGIN
+
+// Guest Routes (Hanya bisa diakses jika BELUM login)
+Route::middleware('guest')->group(function () {
+    Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [AuthController::class, 'login']);
+});
+
+// Authenticated Routes (Hanya bisa diakses jika SUDAH login)
+Route::middleware('auth')->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+});
