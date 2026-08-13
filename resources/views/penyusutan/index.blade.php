@@ -62,7 +62,7 @@
                     }
                 @endphp
                 <tr>
-                    <td>#{{ $loop->iteration }}</td>
+                    <td>{{ $loop->iteration }}</td>
                     <td><b>{{ $item->barang->nama_barang ?? 'Barang Dihapus' }}</b></td>
                     <td>{{ $item->barang->tanggal_beli ?? '-' }}</td>
                     <td>Rp {{ number_format($hargaBeli, 0, ',', '.') }}</td>

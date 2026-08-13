@@ -31,7 +31,7 @@
         <tbody>
             @forelse($kerusakans as $item)
                 <tr>
-                    <td>#{{ $loop->iteration }}</td>
+                    <td>{{ $loop->iteration }}</td>
                     <td>{{ $item->barang->nama_barang ?? 'Barang Dihapus' }}</td>
                     <td>{{ $item->jumlah_rusak }}</td>
                     <td>{{ $item->tingkat_kerusakan }}</td>
