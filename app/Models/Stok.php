@@ -18,4 +18,9 @@ class Stok extends Model
         'total_stok',
         'keterangan',
     ];
+
+    public function barang()
+    {
+        return $this->belongsTo(Barang::class, 'barang_id', 'id_barang');
+    }
 }
