@@ -1,69 +1,69 @@
-@extends('layouts.app')
+```blade
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Data Kategori</title>
+</head>
+<body>
 
-@section('title', 'Data Kategori')
+    <h1>Data Kategori</h1>
 
-@section('content')
-<div class="container mt-4">
-    <div class="card shadow">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h4>Data Kategori</h4>
-            <a href="{{ route('kategori.create') }}" class="btn btn-primary">
-                <i class="fas fa-plus"></i> Tambah Kategori
-            </a>
-        </div>
+    @if(session('success'))
+        <p style="color: green;"><b>{{ session('success') }}</b></p>
+    @endif
 
-        <div class="card-body">
+    <p>
+        <a href="{{ route('kategori.create') }}">+ Tambah Kategori Baru</a>
+    </p>
 
-            @if(session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-            @endif
+    <h3>Daftar Kategori</h3>
 
-            <table class="table table-bordered table-striped">
-                <thead class="table-dark">
-                    <tr>
-                        <th width="10%">No</th>
-                        <th>Nama Kategori</th>
-                        <th>Deskripsi</th>
-                        <th width="20%">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse($kategori as $key => $item)
-                        <tr>
-                            <td>{{ $key + 1 }}</td>
-                            <td>{{ $item->nama_kategori }}</td>
-                            <td>{{ $item->deskripsi }}</td>
-                            <td>
-                                <a href="{{ route('kategori.edit', $item->id) }}" class="btn btn-warning btn-sm">
-                                    Edit
-                                </a>
+    <table border="1" cellpadding="5" cellspacing="0">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Nama Kategori</th>
+                <th>Aksi</th>
+            </tr>
+        </thead>
 
-                                <form action="{{ route('kategori.destroy', $item->id) }}"
-                                      method="POST"
-                                      class="d-inline"
-                                      onsubmit="return confirm('Yakin ingin menghapus data ini?')">
-                                    @csrf
-                                    @method('DELETE')
+        <tbody>
+            @forelse($kategori as $item)
+                <tr>
+                    <td>{{ $loop->iteration }}</td>
 
-                                    <button class="btn btn-danger btn-sm">
-                                        Hapus
-                                    </button>
-                                </form>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="4" class="text-center">
-                                Data kategori belum tersedia.
-                            </td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                    <td>{{ $item->nama_kategori }}</td>
 
-        </div>
-    </div>
-</div>
-@endsection
+                    <td>
+                        <a href="{{ route('kategori.edit', $item->id_kategori) }}">
+                            Edit
+                        </a>
+
+                        |
+
+                        <form action="{{ route('kategori.destroy', $item->id_kategori) }}"
+                              method="POST"
+                              style="display:inline;"
+                              onsubmit="return confirm('Yakin mau hapus kategori ini?')">
+
+                            @csrf
+                            @method('DELETE')
+
+                            <button type="submit">Hapus</button>
+                        </form>
+                    </td>
+                </tr>
+
+            @empty
+
+                <tr>
+                    <td colspan="3">Belum ada data kategori.</td>
+                </tr>
+
+            @endforelse
+        </tbody>
+    </table>
+
+</body>
+</html>
+```
