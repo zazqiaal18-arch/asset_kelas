@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\StokController;
 use App\Http\Controllers\KategoriController;
@@ -23,9 +22,6 @@ use App\Http\Controllers\KerusakanController;
 Route::get('/', function () {
     return view('welcome');
 });
-
-// ROUTE DASHBOARD
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard.index');
 
 // ROUTE BARANG
 Route::get('/barang', [BarangController::class, 'index'])->name('barang.index');
