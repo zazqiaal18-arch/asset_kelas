@@ -3,47 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Data Kategori</title>
-    <script src="[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)"></script>
+    <title>Data Kategori Barang</title>
 </head>
-<body class="bg-gray-100 p-8">
-    <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow">
-        <div class="flex justify-between items-center mb-6">
-            <h1 class="text-2xl font-bold">Daftar Kategori</h1>
-            <a href="{{ route('kategori.create') }}" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">
-                + Tambah Kategori Baru
-            </a>
-        </div>
+<body>
 
-        <table class="w-full text-left border-collapse border border-gray-200">
-            <thead>
-                <tr class="bg-gray-50">
-                    <th class="border p-2">No</th>
-                    <th class="border p-2">Nama Kategori</th>
-                    <th class="border p-2">Aksi</th>
+    <h2>Daftar Kategori Barang</h2>
+
+    <!-- Alert Notifikasi Sukses -->
+    @if(session('success'))
+        <p style="color: green;"><b>{{ session('success') }}</b></p>
+    @endif
+
+    <!-- Alert Notifikasi Error -->
+    @if(session('error'))
+        <p style="color: red;"><b>{{ session('error') }}</b></p>
+    @endif
+
+    <!-- Tombol Tambah Kategori -->
+    <a href="{{ route('kategori.create') }}">
+        <button style="padding: 8px 12px; margin-bottom: 15px; cursor: pointer;">
+            + Tambah Kategori Baru
+        </button>
+    </a>
+
+    <!-- Tabel Data Kategori -->
+    <table border="1" cellpadding="8" cellspacing="0" style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr style="background-color: #f2f2f2;">
+                <th style="width: 50px;">No</th>
+                <th>Nama Kategori</th>
+                <th>Keterangan</th>
+                <th style="width: 180px;">Aksi</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse($kategori as $index => $item)
+                <tr>
+                    <td align="center">{{ $index + 1 }}</td>
+                    <td><b>{{ $item->nama_kategori }}</b></td>
+                    <td>{{ $item->keterangan ?? '-' }}</td>
+                    <td align="center">
+                        <!-- Tombol Edit -->
+                        <a href="{{ route('kategori.edit', $item->id_kategori) }}">
+                            <button style="background-color: #ffc107; border: none; padding: 5px 10px; cursor: pointer;">
+                                Edit
+                            </button>
+                        </a>
+
+                        <!-- Form Hapus -->
+                        <form action="{{ route('kategori.destroy', $item->id_kategori) }}" method="POST" style="display: inline;" onsubmit="return confirm('Apakah Anda yakin ingin menghapus kategori ini?');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" style="background-color: #dc3545; color: white; border: none; padding: 5px 10px; cursor: pointer;">
+                                Hapus
+                            </button>
+                        </form>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                @forelse($kategori as $index => $item)
-                    <tr>
-                        <td class="border p-2">{{ $index + 1 }}</td>
-                        <td class="border p-2">{{ $item->nama_kategori }}</td>
-                        <td class="border p-2">
-                            <a href="{{ route('kategori.edit', $item->id_kategori) }}" class="text-blue-600 mr-2">Edit</a>
-                            <form action="{{ route('kategori.destroy', $item->id_kategori) }}" method="POST" class="inline">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="text-red-600" onclick="return confirm('Yakin hapus?')">Hapus</button>
-                            </form>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="3" class="border p-2 text-center text-gray-500">Belum ada data kategori.</td>
-                    </tr>
-                @endforelse
-            </tbody>
-        </table>
-    </div>
+            @empty
+                <tr>
+                    <td colspan="4" align="center">Belum ada data kategori.</td>
+                </tr>
+            @endforelse
+        </tbody>
+    </table>
+
+    <br>
+    <!-- Tombol Kembali ke Dashboard/Barang -->
+    <a href="{{ route('barang.index') }}">← Kembali ke Data Barang</a>
+
 </body>
 </html>
