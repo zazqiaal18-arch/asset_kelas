@@ -1,21 +1,16 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edit Kategori Barang</title>
+    <title>Edit Data Kategori</title>
 </head>
 <body>
 
-    <p>
-        <a href="{{ route('kategori.index') }}">← Kembali ke Daftar Kategori</a>
-    </p>
+    <a href="{{ route('kategori.index') }}">← Kembali ke Daftar Kategori</a>
 
-    <h1>Edit Kategori Barang</h1>
+    <h1>Edit Kategori: {{ $kategori->nama_kategori }}</h1>
 
-    <!-- Menampilkan Error Validasi jika Inputan Salah -->
     @if ($errors->any())
-        <div style="color: red; margin-bottom: 15px;">
+        <div style="color: red;">
             <ul>
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -29,13 +24,11 @@
         @method('PUT')
 
         <p>
-            <label for="nama_kategori">Nama Kategori:</label><br>
-            <input type="text" id="nama_kategori" name="nama_kategori" value="{{ old('nama_kategori', $kategori->nama_kategori) }}" placeholder="Contoh: Elektronik, Mebel, dll." required>
-        </p>
-
-        <p>
-            <label for="deskripsi">Deskripsi Kategori:</label><br>
-            <textarea id="deskripsi" name="deskripsi" rows="4" cols="40" placeholder="Keterangan singkat kategori (opsional)">{{ old('deskripsi', $kategori->deskripsi) }}</textarea>
+            <label>Nama Kategori: </label><br>
+            <input type="text"
+                   name="nama_kategori"
+                   value="{{ old('nama_kategori', $kategori->nama_kategori) }}"
+                   required>
         </p>
 
         <button type="submit">Update Kategori</button>
@@ -43,3 +36,4 @@
 
 </body>
 </html>
+```
