@@ -1,68 +1,122 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daftar Akun</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+@extends('layouts.auth')
 
-    <div class="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-md border border-gray-100">
-        <div>
-            <h2 class="text-center text-3xl font-extrabold text-gray-900">
-                Daftar Akun Baru
-            </h2>
-            <p class="mt-2 text-center text-sm text-gray-600">
-                Sudah punya akun?
-                <a href="{{ route('login') }}" class="font-medium text-blue-600 hover:text-blue-500">
-                    Masuk di sini
-                </a>
-            </p>
-        </div>
+@section('title', 'Register')
 
-        <form class="mt-8 space-y-4" action="{{ route('register.store') }}" method="POST">
-            @csrf
-
-            <div>
-                <label for="name" class="block text-sm font-medium text-gray-700">Nama Lengkap</label>
-                <input id="name" name="name" type="text" value="{{ old('name') }}" required 
-                       class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm">
-                @error('name')
-                    <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <div>
-                <label for="email" class="block text-sm font-medium text-gray-700">Alamat Email</label>
-                <input id="email" name="email" type="email" value="{{ old('email') }}" required 
-                       class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm">
-                @error('email')
-                    <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <div>
-                <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                <input id="password" name="password" type="password" required 
-                       class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm">
-                @error('password')
-                    <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <div>
-                <label for="password_confirmation" class="block text-sm font-medium text-gray-700">Konfirmasi Password</label>
-                <input id="password_confirmation" name="password_confirmation" type="password" required 
-                       class="mt-1 w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm">
-            </div>
-
-            <button type="submit" 
-                    class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition">
-                Daftar
-            </button>
-        </form>
+@section('content')
+    <div class="login-header">
+        <h2>Daftar Akun</h2>
+        <p>Buat akun baru untuk memulai</p>
     </div>
 
-</body>
-</html>
+    @if($errors->any())
+        <div class="alert alert-error">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>{{ $errors->first() }}</span>
+        </div>
+    @endif
+
+    <form action="{{ route('register') }}" method="POST">
+        @csrf
+
+        <div class="form-group">
+            <label for="name">Nama Lengkap</label>
+            <div class="input-wrapper">
+                <input 
+                    id="name" 
+                    name="name" 
+                    type="text" 
+                    value="{{ old('name') }}" 
+                    placeholder="Nama Lengkap"
+                    required
+                    autofocus
+                >
+                <i class="fas fa-user input-icon"></i>
+                @error('name')
+                    <span class="input-error">{{ $message }}</span>
+                @enderror
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="email">Alamat Email</label>
+            <div class="input-wrapper">
+                <input 
+                    id="email" 
+                    name="email" 
+                    type="email" 
+                    value="{{ old('email') }}" 
+                    placeholder="nama@perusahaan.com"
+                    required
+                >
+                <i class="fas fa-envelope input-icon"></i>
+                @error('email')
+                    <span class="input-error">{{ $message }}</span>
+                @enderror
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <div class="input-wrapper">
+                <input 
+                    id="password" 
+                    name="password" 
+                    type="password" 
+                    placeholder="Minimal 8 karakter"
+                    required
+                >
+                <i class="fas fa-lock input-icon"></i>
+                <button type="button" class="toggle-password" onclick="togglePassword()">
+                    <i class="fas fa-eye" id="passwordIcon"></i>
+                </button>
+                @error('password')
+                    <span class="input-error">{{ $message }}</span>
+                @enderror
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label for="password_confirmation">Konfirmasi Password</label>
+            <div class="input-wrapper">
+                <input 
+                    id="password_confirmation" 
+                    name="password_confirmation" 
+                    type="password" 
+                    placeholder="Konfirmasi password"
+                    required
+                >
+                <i class="fas fa-check-circle input-icon"></i>
+            </div>
+        </div>
+
+        <button type="submit" class="btn-login">
+            <span class="btn-shine"></span>
+            <i class="fas fa-user-plus"></i>
+            Daftar
+        </button>
+    </form>
+
+    <div class="register-link">
+        Sudah punya akun?
+        <a href="{{ route('login') }}">Masuk sekarang</a>
+    </div>
+@endsection
+
+@push('scripts')
+<script>
+    function togglePassword() {
+        const passwordInput = document.getElementById('password');
+        const passwordIcon = document.getElementById('passwordIcon');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            passwordIcon.classList.remove('fa-eye');
+            passwordIcon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            passwordIcon.classList.remove('fa-eye-slash');
+            passwordIcon.classList.add('fa-eye');
+        }
+    }
+</script>
+@endpush
