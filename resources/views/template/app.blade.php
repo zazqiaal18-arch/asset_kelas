@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  
+
   <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,6 +16,7 @@
 
   <!-- KODE PERBAIKAN TATA LETAK NAVBAR & SIDEBAR -->
   <style>
+
     body {
       overflow-x: hidden;
       margin: 0;
@@ -48,6 +49,15 @@
     .admin-main .navbar {
       width: 100%;
       box-sizing: border-box;
+    }
+
+    .table td, .table th {
+      padding: 0.5rem 0.75rem !important;
+      vertical-align: middle;
+    }
+
+    .card-body {
+      padding: 1rem !important;
     }
   </style>
 </head>
