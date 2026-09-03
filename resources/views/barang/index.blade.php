@@ -32,6 +32,7 @@
           <thead>
             <tr class="border-bottom theme-border">
               <th scope="col" class="ps-4 theme-text-secondary" style="width: 50px;">NO</th>
+              <th scope="col" class="theme-text-secondary">KODE</th>
               <th scope="col" class="theme-text-secondary">NAMA BARANG</th>
               <th scope="col" class="theme-text-secondary">JUMLAH</th>
               <th scope="col" class="theme-text-secondary">TANGGAL BELI</th>
@@ -43,6 +44,9 @@
             @forelse($barangs as $item)
               <tr class="border-bottom theme-border">
                 <td class="ps-4 fw-semibold theme-text-secondary">{{ $loop->iteration }}</td>
+                <td class="fw-semibold theme-text-secondary">
+                  {{ $item->kode_barang ?: 'BRG-' . str_pad($item->id_barang, 4, '0', STR_PAD_LEFT) }}
+                </td>
                 <td class="fw-bold theme-text-primary">{{ $item->nama_barang }}</td>
                 <td>
                   <span class="fw-bold theme-text-primary">{{ $item->jumlah }}</span>
@@ -69,7 +73,7 @@
               </tr>
             @empty
               <tr>
-                <td colspan="6" class="text-center py-4 theme-text-secondary">
+                <td colspan="7" class="text-center py-4 theme-text-secondary">
                   Belum ada data barang.
                 </td>
               </tr>

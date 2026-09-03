@@ -12,14 +12,10 @@
     </div>
 
     <div class="ms-auto d-flex align-items-center gap-2">
-      <button type="button" class="btn btn-light border shadow-sm" data-theme-toggle aria-label="Toggle theme">
-        <i data-theme-icon class="bi bi-sun"></i>
-      </button>
-
       <div class="dropdown">
         <button class="btn btn-light border shadow-sm dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-          <img src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="{{ ucfirst(optional(auth()->user())->role ?? 'User') }}" class="avatar-sm rounded-circle border border-2 border-success" style="width: 32px; height: 32px; object-fit: cover;">
-          <span class="d-none d-sm-inline fw-semibold text-dark">{{ ucfirst(optional(auth()->user())->role ?? 'User') }}</span>
+          <img src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="{{ optional(auth()->user())->name ?? 'User' }}" class="avatar-sm rounded-circle border border-2 border-success" style="width: 32px; height: 32px; object-fit: cover;">
+          <span class="d-none d-sm-inline fw-semibold text-dark">{{ optional(auth()->user())->name ?? 'User' }}</span>
         </button>
         <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
           <li><a class="dropdown-item" href="{{ route('dashboard') }}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>

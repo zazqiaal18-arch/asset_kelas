@@ -28,11 +28,15 @@ class BarangController extends Controller
             'harga_beli'   => 'nullable|numeric|min:0',
         ]);
 
-        Barang::create([
+        $barang = Barang::create([
             'nama_barang'  => $request->nama_barang,
             'jumlah'       => $request->jumlah,
             'tanggal_beli' => $request->tanggal_beli,
             'harga_beli'   => $request->harga_beli,
+        ]);
+
+        $barang->update([
+            'kode_barang' => 'BRG-' . str_pad($barang->id_barang, 4, '0', STR_PAD_LEFT),
         ]);
 
         return redirect()->route('barang.index')->with('success', 'Barang berhasil ditambahkan!');
