@@ -19,6 +19,11 @@ Route::get('/', function () {
     return redirect()->route('login');
 });
 
+//dashboard
+// 1. Rute Dashboard Utama
+Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index']);
+
 // ROUTE AUTHENTICATION (Guest / Belum Login)
 Route::middleware('guest')->group(function () {
     // Register
