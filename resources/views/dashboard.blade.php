@@ -591,10 +591,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const ctx = canvas.getContext('2d');
 
-    // Data kerusakan dari Laravel
-    const kerusakanRingan = @json($kerusakanRingan ?? 0);
-    const kerusakanSedang = @json($kerusakanSedang ?? 0);
-    const kerusakanBerat = @json($kerusakanBerat ?? 0);
+    // Menggunakan Number() untuk memastikan output berupa angka
+    const kerusakanRingan = Number("{{ $kerusakanRingan ?? 0 }}");
+    const kerusakanSedang = Number("{{ $kerusakanSedang ?? 0 }}");
+    const kerusakanBerat = Number("{{ $kerusakanBerat ?? 0 }}");
     
     const totalData = kerusakanRingan + kerusakanSedang + kerusakanBerat;
 
