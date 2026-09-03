@@ -1,46 +1,432 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Tambah Barang Baru</title>
-</head>
-<body>
-    <h1>Tambah Barang Baru</h1>
+@extends('template.app')
 
-    @if ($errors->any())
-        <div style="color: red;">
-            <ul>
-                @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-    @endif
+@section('title', 'Tambah Barang Baru')
 
-    <form action="{{ route('barang.store') }}" method="POST">
+@section('content')
+<div class="container-fluid px-0">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h3 class="fw-bold mb-1 theme-text-primary">Tambah Barang Baru</h3>
+      <p class="mb-0 theme-text-secondary">Masukkan data barang / aset kelas baru.</p>
+    </div>
+    <a href="{{ route('barang.index') }}" class="btn btn-outline-secondary">
+      <i class="bi bi-arrow-left me-1"></i> Kembali
+    </a>
+  </div>
+
+  <!-- Error Alert -->
+  @if ($errors->any())
+    <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
+      <strong>Gagal!</strong> Mohon periksa kembali data yang Anda masukkan.
+      <ul class="mb-0 mt-2">
+        @foreach ($errors->all() as $error)
+          <li>{{ $error }}</li>
+        @endforeach
+      </ul>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  @endif
+
+  <!-- Form Card -->
+  <div class="card border-0 theme-card shadow-sm">
+    <div class="card-body p-4">
+      <form action="{{ route('barang.store') }}" method="POST">
         @csrf
 
-        <p>
-            <label>Nama Barang: </label><br>
-            <input type="text" name="nama_barang" value="{{ old('nama_barang') }}" required>
-        </p>
+        <!-- Nama Barang -->
+        <div class="mb-4">
+          <label for="nama_barang" class="form-label fw-semibold theme-text-primary">
+            <i class="bi bi-box me-1"></i> Nama Barang
+          </label>
+          <input type="text" 
+                 class="form-control theme-input @error('nama_barang') is-invalid @enderror" 
+                 id="nama_barang" 
+                 name="nama_barang" 
+                 value="{{ old('nama_barang') }}" 
+                 placeholder="Masukkan nama barang" 
+                 required>
+          @error('nama_barang')
+            <div class="invalid-feedback">{{ $message }}</div>
+          @enderror
+        </div>
 
-        <p>
-            <label>Jumlah / Stok: </label><br>
-            <input type="number" name="jumlah" min="1" value="{{ old('jumlah') }}" required>
-        </p>
+        <!-- Jumlah / Stok -->
+        <div class="mb-4">
+          <label for="jumlah" class="form-label fw-semibold theme-text-primary">
+            <i class="bi bi-hash me-1"></i> Jumlah / Stok
+          </label>
+          <input type="number" 
+                 class="form-control theme-input @error('jumlah') is-invalid @enderror" 
+                 id="jumlah" 
+                 name="jumlah" 
+                 min="1" 
+                 value="{{ old('jumlah') }}" 
+                 placeholder="Masukkan jumlah stok" 
+                 required>
+          @error('jumlah')
+            <div class="invalid-feedback">{{ $message }}</div>
+          @enderror
+        </div>
 
-        <p>
-            <label>Tanggal Beli:</label><br>
-            <input type="date" name="tanggal_beli" value="{{ old('tanggal_beli') }}">
-        </p>
+        <!-- Tanggal Beli -->
+        <div class="mb-4">
+          <label for="tanggal_beli" class="form-label fw-semibold theme-text-primary">
+            <i class="bi bi-calendar me-1"></i> Tanggal Beli
+          </label>
+          <input type="date" 
+                 class="form-control theme-input @error('tanggal_beli') is-invalid @enderror" 
+                 id="tanggal_beli" 
+                 name="tanggal_beli" 
+                 value="{{ old('tanggal_beli') }}">
+          @error('tanggal_beli')
+            <div class="invalid-feedback">{{ $message }}</div>
+          @enderror
+        </div>
 
-        <p>
-            <label>Harga Beli (Rp):</label><br>
-            <input type="number" name="harga_beli" min="0" placeholder="Contoh: 1500000" value="{{ old('harga_beli') }}">
-        </p>
+        <!-- Harga Beli -->
+        <div class="mb-4">
+          <label for="harga_beli" class="form-label fw-semibold theme-text-primary">
+            <i class="bi bi-coin me-1"></i> Harga Beli (Rp)
+          </label>
+          <input type="number" 
+                 class="form-control theme-input @error('harga_beli') is-invalid @enderror" 
+                 id="harga_beli" 
+                 name="harga_beli" 
+                 min="0" 
+                 step="1000"
+                 value="{{ old('harga_beli') }}" 
+                 placeholder="Masukkan harga beli (contoh: 1500000)">
+          @error('harga_beli')
+            <div class="invalid-feedback">{{ $message }}</div>
+          @enderror
+          <small class="theme-text-secondary">
+            <i class="bi bi-info-circle me-1"></i>
+            Format: angka tanpa titik atau koma (contoh: 1500000)
+          </small>
+        </div>
 
-        <button type="submit">Simpan Barang</button>
-    </form>
+        <!-- Tombol Submit -->
+        <div class="d-flex gap-2">
+          <button type="submit" class="btn btn-primary px-4">
+            <i class="bi bi-save me-1"></i> Simpan Barang
+          </button>
+          <a href="{{ route('barang.index') }}" class="btn btn-secondary px-4">
+            <i class="bi bi-x-lg me-1"></i> Batal
+          </a>
+        </div>
+      </form>
+    </div>
+  </div>
 
-</body>
-</html>
+</div>
+@endsection
+
+@push('styles')
+<style>
+/* ===== DARK/LIGHT MODE VARIABLES ===== */
+:root {
+  /* Light Mode */
+  --theme-bg-body: #f0f2f5;
+  --theme-bg-card: #ffffff;
+  --theme-text-primary: #1a1a2e;
+  --theme-text-secondary: #6c757d;
+  --theme-border-color: #dee2e6;
+  --theme-input-bg: #ffffff;
+  --theme-input-border: #ced4da;
+  --theme-input-focus: #0d6efd;
+  --theme-input-shadow: rgba(13, 110, 253, 0.25);
+  --theme-label-color: #1a1a2e;
+  --theme-card-shadow: rgba(0, 0, 0, 0.08);
+  --theme-placeholder: #6c757d;
+  --theme-input-text: #1a1a2e;
+  --theme-btn-secondary-bg: #e9ecef;
+  --theme-btn-secondary-color: #1a1a2e;
+  --theme-btn-secondary-border: #ced4da;
+}
+
+[data-bs-theme="dark"] {
+  /* Dark Mode */
+  --theme-bg-body: #0d0d1a;
+  --theme-bg-card: #ffffff;
+  --theme-text-primary: #1a1a2e;
+  --theme-text-secondary: #6c757d;
+  --theme-border-color: #dee2e6;
+  --theme-input-bg: #ffffff;
+  --theme-input-border: #ced4da;
+  --theme-input-focus: #4d8cf7;
+  --theme-input-shadow: rgba(77, 140, 247, 0.3);
+  --theme-label-color: #1a1a2e;
+  --theme-card-shadow: rgba(0, 0, 0, 0.15);
+  --theme-placeholder: #6c757d;
+  --theme-input-text: #1a1a2e;
+  --theme-btn-secondary-bg: #e9ecef;
+  --theme-btn-secondary-color: #1a1a2e;
+  --theme-btn-secondary-border: #ced4da;
+}
+
+/* ===== BODY ===== */
+body {
+  background-color: var(--theme-bg-body);
+  color: var(--theme-text-primary);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* ===== CARD - PUTIH DI KEDUA MODE ===== */
+.theme-card {
+  background-color: #ffffff !important;
+  border: 1px solid var(--theme-border-color) !important;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+  box-shadow: 0 2px 12px var(--theme-card-shadow) !important;
+}
+
+/* ===== TEXT ===== */
+.theme-text-primary {
+  color: var(--theme-text-primary) !important;
+  transition: color 0.3s ease;
+}
+
+.theme-text-secondary {
+  color: var(--theme-text-secondary) !important;
+  transition: color 0.3s ease;
+}
+
+/* ===== FORM LABEL ===== */
+.form-label {
+  color: var(--theme-label-color) !important;
+  transition: color 0.3s ease;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+/* ===== INPUT - PUTIH ===== */
+.theme-input {
+  background-color: #ffffff !important;
+  color: #1a1a2e !important;
+  border: 2px solid var(--theme-input-border) !important;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+  padding: 0.7rem 1rem !important;
+  border-radius: 0.5rem !important;
+  font-size: 0.95rem !important;
+  width: 100% !important;
+}
+
+.theme-input:focus {
+  background-color: #ffffff !important;
+  color: #1a1a2e !important;
+  border-color: var(--theme-input-focus) !important;
+  box-shadow: 0 0 0 0.25rem var(--theme-input-shadow) !important;
+  outline: none !important;
+}
+
+.theme-input::placeholder {
+  color: var(--theme-placeholder) !important;
+  opacity: 0.6;
+}
+
+.theme-input.is-invalid {
+  border-color: #dc3545 !important;
+  box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important;
+}
+
+.theme-input:disabled,
+.theme-input[readonly] {
+  background-color: #f0f0f0 !important;
+  opacity: 0.7;
+}
+
+/* ===== BUTTONS ===== */
+.btn-primary {
+  background-color: #0d6efd !important;
+  border-color: #0d6efd !important;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  padding: 0.6rem 1.5rem !important;
+  border-radius: 0.5rem !important;
+  color: #ffffff !important;
+}
+
+.btn-primary:hover {
+  background-color: #0b5ed7 !important;
+  border-color: #0a58ca !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(13, 110, 253, 0.4) !important;
+  color: #ffffff !important;
+}
+
+.btn-primary:active {
+  transform: translateY(0px) !important;
+}
+
+/* ===== BUTTON BATAL - LEBIH JELAS ===== */
+.btn-secondary {
+  background-color: var(--theme-btn-secondary-bg) !important;
+  border: 2px solid var(--theme-btn-secondary-border) !important;
+  color: var(--theme-btn-secondary-color) !important;
+  transition: all 0.3s ease;
+  font-weight: 600;
+  padding: 0.6rem 1.5rem !important;
+  border-radius: 0.5rem !important;
+}
+
+.btn-secondary:hover {
+  background-color: #d3d7dd !important;
+  border-color: #b8bcc2 !important;
+  color: var(--theme-btn-secondary-color) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+}
+
+.btn-secondary:active {
+  transform: translateY(0px) !important;
+}
+
+/* ===== ALERT ===== */
+.alert-danger {
+  background-color: #dc3545 !important;
+  color: #ffffff !important;
+  border: none !important;
+  border-radius: 0.5rem !important;
+  padding: 1rem 1.25rem !important;
+}
+
+.alert-danger ul {
+  color: #ffffff !important;
+  padding-left: 1.5rem !important;
+  margin-bottom: 0 !important;
+}
+
+.alert-danger .btn-close {
+  filter: brightness(0) invert(1);
+}
+
+.alert-success {
+  border-radius: 0.5rem !important;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .card-body {
+    padding: 1.25rem !important;
+  }
+  
+  .d-flex.gap-2 {
+    flex-direction: column;
+  }
+  
+  .d-flex.gap-2 .btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .theme-input {
+    padding: 0.6rem 0.75rem !important;
+    font-size: 0.9rem !important;
+  }
+  
+  .form-label {
+    font-size: 0.85rem !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .container-fluid {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+  
+  .card-body {
+    padding: 1rem !important;
+  }
+}
+
+/* ===== SMOOTH TRANSITION ===== */
+* {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--theme-bg-body);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--theme-border-color);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--theme-text-secondary);
+}
+
+/* ===== SELECTION ===== */
+::selection {
+  background-color: var(--theme-input-focus);
+  color: #ffffff;
+}
+
+/* ===== LINK ===== */
+a {
+  color: var(--theme-input-focus);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: var(--theme-input-focus);
+  opacity: 0.8;
+}
+</style>
+@endpush
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Load saved theme
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    document.documentElement.setAttribute('data-bs-theme', savedTheme);
+    
+    // Update icon if exists
+    updateThemeIcon();
+});
+
+// Function to toggle theme
+function toggleTheme() {
+    const html = document.documentElement;
+    const currentTheme = html.getAttribute('data-bs-theme');
+    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    html.setAttribute('data-bs-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    updateThemeIcon();
+}
+
+// Update theme icon
+function updateThemeIcon() {
+    const theme = document.documentElement.getAttribute('data-bs-theme');
+    const icon = document.getElementById('themeIcon');
+    if (icon) {
+        if (theme === 'dark') {
+            icon.className = 'bi bi-sun-fill';
+            icon.title = 'Switch to Light Mode';
+        } else {
+            icon.className = 'bi bi-moon-fill';
+            icon.title = 'Switch to Dark Mode';
+        }
+    }
+}
+
+// Auto-detect system preference
+if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+    if (!localStorage.getItem('theme')) {
+        document.documentElement.setAttribute('data-bs-theme', 'dark');
+        localStorage.setItem('theme', 'dark');
+    }
+}
+</script>
+@endpush

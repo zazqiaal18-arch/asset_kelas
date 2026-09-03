@@ -1,71 +1,97 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Aplikasi</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+@extends('layouts.auth')
 
-    <div class="w-full max-w-md bg-white p-8 rounded-xl shadow-lg border border-gray-200">
-        <!-- Header -->
-        <div class="text-center mb-6">
-            <h1 class="text-2xl font-bold text-gray-800">Masuk ke Akun</h1>
-            <p class="text-sm text-gray-500 mt-1">Silakan masukkan email dan password Anda</p>
+@section('title', 'Login')
+
+@section('content')
+<div class="login-header">
+    <h2>Selamat Datang</h2>
+    <p>Silakan masuk ke akun Anda</p>
+</div>
+
+{{-- Alert Notifikasi --}}
+@if(session('error'))
+    <div class="alert alert-error">
+        <i class="fas fa-exclamation-circle"></i>
+        <span>{{ session('error') }}</span>
+    </div>
+@endif
+
+@if(session('success'))
+    <div class="alert alert-success">
+        <i class="fas fa-check-circle"></i>
+        <span>{{ session('success') }}</span>
+    </div>
+@endif
+
+<form action="{{ route('login.process') }}" method="POST">
+    @csrf
+
+    {{-- Email --}}
+    <div class="form-group">
+        <label for="email">Email</label>
+        <div class="input-wrapper">
+            <input type="email" id="email" name="email" value="{{ old('email') }}" placeholder="admin@gmail.com" required autofocus>
+            <i class="fas fa-envelope input-icon"></i>
         </div>
-
-        <!-- Alert Notifikasi Gagal/Logout -->
-        @if(session('success'))
-            <div class="mb-4 p-3 bg-green-100 border border-green-400 text-green-700 text-sm rounded-lg">
-                {{ session('success') }}
-            </div>
-        @endif
-
-        <form action="{{ route('login') }}" method="POST">
-            @csrf
-
-            <!-- Email -->
-            <div class="mb-4">
-                <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Alamat Email</label>
-                <input type="email" 
-                       name="email" 
-                       id="email" 
-                       value="{{ old('email') }}" 
-                       required 
-                       autofocus
-                       class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-sm @error('email') border-red-500 @else border-gray-300 @enderror">
-                
-                @error('email')
-                    <p class="mt-1 text-xs text-red-500">{{ $message }}</p>
-                @enderror
-            </div>
-
-            <!-- Password -->
-            <div class="mb-4">
-                <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                <input type="password" 
-                       name="password" 
-                       id="password" 
-                       required
-                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition text-sm">
-            </div>
-
-            <!-- Remember Me -->
-            <div class="flex items-center justify-between mb-6">
-                <label class="flex items-center cursor-pointer">
-                    <input type="checkbox" name="remember" class="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
-                    <span class="ml-2 text-sm text-gray-600">Ingat Saya</span>
-                </label>
-            </div>
-
-            <!-- Submit Button -->
-            <button type="submit" 
-                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-2.5 rounded-lg transition duration-200">
-                Masuk
-            </button>
-        </form>
+        @error('email')
+            <span class="input-error">{{ $message }}</span>
+        @enderror
     </div>
 
-</body>
-</html>
+    {{-- Password --}}
+    <div class="form-group">
+        <label for="password">Password</label>
+        <div class="input-wrapper">
+            <input type="password" id="password" name="password" placeholder="••••••••" required>
+            <i class="fas fa-lock input-icon"></i>
+            <button type="button" class="toggle-password" onclick="togglePasswordVisibility()">
+                <i class="fas fa-eye" id="eyeIcon"></i>
+            </button>
+        </div>
+        @error('password')
+            <span class="input-error">{{ $message }}</span>
+        @enderror
+    </div>
+
+    {{-- Tombol Login --}}
+    <button type="submit" class="btn-login" style="margin-top: 10px;">
+        <span class="btn-shine"></span>
+        <i class="fas fa-sign-in-alt"></i>
+        <span>Masuk</span>
+    </button>
+</form>
+
+{{-- Tombol Login Google --}}
+<div style="margin-top: 15px;">
+    <a href="{{ route('auth.google') }}" style="text-decoration: none;">
+        <button type="button" class="btn-login" style="background: #ea4335; margin-top: 0;">
+            <i class="fab fa-google"></i>
+            <span>Masuk dengan Google</span>
+        </button>
+    </a>
+</div>
+
+{{-- Link ke Register --}}
+<div class="register-link">
+    Belum punya akun? <a href="{{ route('register') }}">Daftar di sini</a>
+</div>
+@endsection
+
+@push('scripts')
+<script>
+    function togglePasswordVisibility() {
+        const passwordInput = document.getElementById('password');
+        const eyeIcon = document.getElementById('eyeIcon');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            eyeIcon.classList.remove('fa-eye');
+            eyeIcon.classList.add('fa-eye-slash');
+        } else {
+            passwordInput.type = 'password';
+            eyeIcon.classList.remove('fa-eye-slash');
+            eyeIcon.classList.add('fa-eye');
+        }
+    }
+</script>
+@endpush
