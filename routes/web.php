@@ -30,9 +30,6 @@ Route::get('/', function () {
 // Rute untuk halaman utama (Dashboard)
 Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
-// Atau jika ingin menggunakan URL /dashboard
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
 // ROUTE BARANG
 Route::get('/barang', [BarangController::class, 'index'])->name('barang.index');
 Route::get('/barang/create', [BarangController::class, 'create'])->name('barang.create');

@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('template.app')
 
 @section('title', 'Data Kategori')
 
