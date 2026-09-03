@@ -44,16 +44,6 @@
   }
 
   function getPreferredTheme(storageAvailable) {
-    var savedTheme = storageAvailable ? window.localStorage.getItem(themeStorageKey) : "";
-
-    if (savedTheme === "dark" || savedTheme === "light") {
-      return savedTheme;
-    }
-
-    if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      return "dark";
-    }
-
     return "light";
   }
 
@@ -135,8 +125,7 @@
 
       Array.prototype.forEach.call(themeToggles, function (button) {
         button.addEventListener("click", function () {
-          var currentTheme = document.documentElement.getAttribute("data-theme") === "dark" ? "dark" : "light";
-          applyTheme(currentTheme === "dark" ? "light" : "dark");
+          applyTheme("light");
         });
       });
     }
@@ -147,13 +136,16 @@
 
     // Initialize user profile values in UI. Provide a window.adminHMDUser object to override defaults.
     function initUserProfile() {
-      var user = window.adminHMDUser || { name: "Admin Hasan", workspace: "Active Workspace", avatar: "../assets/images/avatar/avatar.jpg" };
-
       var sidebarNameEl = document.querySelector(".sidebar-user strong");
       var sidebarWorkspaceEl = document.querySelector(".sidebar-user small");
       var sidebarAvatar = document.querySelector(".sidebar-user .avatar-img");
       var profileNameEls = document.querySelectorAll(".profile-name");
       var profileAvatarEls = document.querySelectorAll(".profile-button .avatar-img, .profile-button img");
+      var user = window.adminHMDUser || {
+        name: sidebarNameEl ? sidebarNameEl.textContent.trim() : "User",
+        workspace: sidebarWorkspaceEl ? sidebarWorkspaceEl.textContent.trim() : "Role Pengguna",
+        avatar: "../assets/images/avatar/avatar.jpg"
+      };
 
       if (sidebarNameEl) sidebarNameEl.textContent = user.name;
       if (sidebarWorkspaceEl) sidebarWorkspaceEl.textContent = user.workspace;

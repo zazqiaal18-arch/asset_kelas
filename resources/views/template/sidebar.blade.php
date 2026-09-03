@@ -1,7 +1,8 @@
 <aside class="admin-sidebar" id="adminSidebar">
   <div class="sidebar-header px-3 py-3">
-    <a href="{{ url('/') }}" class="text-decoration-none text-white fw-bold fs-5">
-      adminHMD
+    <a href="{{ url('/') }}" class="brand-mark text-decoration-none fw-bold fs-5">
+      <span class="brand-icon"><i class="bi bi-boxes"></i></span>
+      <span class="brand-copy">Asset Kelas</span>
     </a>
   </div>
 
@@ -53,9 +54,9 @@
   </nav>
 
   <div class="sidebar-user">
-    <img class="avatar-img avatar-md sidebar-user-avatar" src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="Admin Hasan">
-    <strong>Admin Hasan</strong>
-    <small>Active Workspace</small>
+    <img class="avatar-img avatar-md sidebar-user-avatar" src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="{{ ucfirst(optional(auth()->user())->role ?? 'User') }}">
+    <strong data-user-role>{{ ucfirst(optional(auth()->user())->role ?? 'User') }}</strong>
+    <small>Role Pengguna</small>
   </div>
 
   <div class="sidebar-footer">

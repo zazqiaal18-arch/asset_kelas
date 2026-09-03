@@ -21,14 +21,14 @@
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
             min-height: 100vh;
             display: flex;
-            background: #0a1922;
+            background: #f4f7fb;
             overflow: hidden;
         }
 
         /* Left Section - Branding */
         .left-section {
             flex: 1;
-            background: linear-gradient(135deg, #0a1628 0%, #1a2a4a 50%, #0d1f3c 100%);
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 52%, #bfdbfe 100%);
             padding: 60px 50px;
             display: flex;
             flex-direction: column;
@@ -170,7 +170,7 @@
         /* Right Section - Login Form */
         .right-section {
             flex: 1;
-            background: #0f1f2e;
+            background: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -498,6 +498,66 @@
 
         .right-section {
             animation: fadeInRight 0.8s ease;
+        }
+
+        .brand-logo span,
+        .brand-content h1,
+        .login-header h2 {
+            color: #0f172a;
+        }
+
+        .brand-content .subtitle,
+        .feature-item,
+        .login-header p,
+        .form-group label,
+        .remember-me,
+        .forgot-link,
+        .register-link {
+            color: #475569;
+        }
+
+        .brand-content h1 .highlight,
+        .register-link a,
+        .forgot-link:hover {
+            color: #2563eb;
+        }
+
+        .feature-item .icon-box {
+            background: rgba(37, 99, 235, 0.1);
+            border-color: rgba(37, 99, 235, 0.18);
+        }
+
+        .feature-item .icon-box i,
+        .input-wrapper .input-icon {
+            color: #2563eb;
+        }
+
+        .input-wrapper input {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #0f172a;
+        }
+
+        .input-wrapper input::placeholder {
+            color: #94a3b8;
+        }
+
+        .input-wrapper input:focus {
+            background: #ffffff;
+            border-color: #60a5fa;
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+        }
+
+        .input-wrapper .toggle-password {
+            color: #94a3b8;
+        }
+
+        .input-wrapper .toggle-password:hover {
+            color: #2563eb;
+        }
+
+        .grid-pattern {
+            opacity: 0.45;
         }
     </style>
 

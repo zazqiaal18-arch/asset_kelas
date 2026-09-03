@@ -5,34 +5,97 @@
 <!-- Custom Styles -->
 <style>
     :root {
-        --inv-primary: #1e293b;
-        --inv-accent: #3b82f6;
-        --inv-bg: #f8fafc;
-        --inv-card-bg: #ffffff;
-        --inv-border: #e2e8f0;
-        --inv-text-main: #334155;
-        --inv-text-muted: #64748b;
+        --inv-primary: var(--admin-text);
+        --inv-accent: var(--admin-primary);
+        --inv-bg: var(--admin-bg);
+        --inv-card-bg: var(--admin-surface);
+        --inv-border: var(--admin-border);
+        --inv-text-main: var(--admin-text);
+        --inv-text-muted: var(--admin-muted);
     }
 
     body {
-        background-color: var(--inv-bg);
-        color: var(--inv-text-main);
-        font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+        background: var(--inv-bg);
+        color: #000000;
+        font-family: "Segoe UI", Arial, sans-serif;
+    }
+
+    .dashboard-page,
+    .dashboard-page .card-corporate,
+    .dashboard-page .stat-card,
+    .dashboard-page .table-responsive,
+    .dashboard-page .list-group-item {
+        background: #ffffff;
+        color: #000000;
+    }
+
+    .dashboard-page h1,
+    .dashboard-page h2,
+    .dashboard-page h3,
+    .dashboard-page h4,
+    .dashboard-page h5,
+    .dashboard-page h6,
+    .dashboard-page p,
+    .dashboard-page span,
+    .dashboard-page td,
+    .dashboard-page th,
+    .dashboard-page strong,
+    .dashboard-page .text-dark,
+    .dashboard-page .text-secondary,
+    .dashboard-page .text-muted {
+        color: #000000 !important;
+    }
+
+    .dashboard-page .card-header,
+    .dashboard-page .table-corporate th {
+        background: #ffffff;
+        color: #000000 !important;
+        border-color: #d1d5db;
+    }
+
+    .dashboard-page .table-corporate td {
+        color: #000000 !important;
+        border-color: #e5e7eb;
+    }
+
+    .dashboard-page .table-corporate tbody tr:hover {
+        background: #f8fafc;
+    }
+
+    .dashboard-page .stat-icon,
+    .dashboard-page .badge-soft-success,
+    .dashboard-page .badge-soft-warning,
+    .dashboard-page .badge-soft-danger,
+    .dashboard-page .badge-soft-info {
+        background: #eef7fd !important;
+        color: #2980b9 !important;
+    }
+
+    .dashboard-page .btn-outline-danger {
+        border-color: #b9d9ee;
+        color: #2980b9;
+    }
+
+    .dashboard-page .btn-outline-danger:hover,
+    .dashboard-page .btn-outline-danger:focus {
+        background: #eef7fd;
+        border-color: #8fc5e5;
+        color: #2980b9;
     }
 
     /* Stats Widget */
     .stat-card {
         background: var(--inv-card-bg);
         border: 1px solid var(--inv-border);
-        border-radius: 12px;
+        border-radius: 16px;
         padding: 20px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        box-shadow: var(--admin-shadow-sm);
         transition: transform 0.2s, box-shadow 0.2s;
     }
 
     .stat-card:hover {
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        box-shadow: var(--admin-shadow);
     }
 
     .stat-icon {
@@ -50,8 +113,8 @@
     .card-corporate {
         background: var(--inv-card-bg);
         border: 1px solid var(--inv-border);
-        border-radius: 12px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        border-radius: 16px;
+        box-shadow: var(--admin-shadow-sm);
         margin-bottom: 24px;
         overflow: hidden;
     }
@@ -74,7 +137,7 @@
     }
 
     .table-corporate th {
-        background-color: #f1f5f9;
+        background-color: var(--admin-surface-soft);
         color: #475569;
         font-weight: 600;
         text-transform: uppercase;
@@ -98,28 +161,28 @@
     }
 
     .table-corporate tbody tr:hover {
-        background-color: #f8fafc;
+        background-color: #f8fbff;
     }
 
     /* Badges */
     .badge-soft-success {
-        background-color: #dcfce7;
-        color: #166534;
+        background-color: #eef7fd;
+        color: #2980b9;
     }
 
     .badge-soft-warning {
-        background-color: #fef9c3;
-        color: #854d0e;
+        background-color: #f3f8fc;
+        color: #4b6b80;
     }
 
     .badge-soft-danger {
-        background-color: #fee2e2;
-        color: #991b1b;
+        background-color: #edf2f6;
+        color: #405568;
     }
 
     .badge-soft-info {
-        background-color: #e0f2fe;
-        color: #075985;
+        background-color: #eef7fd;
+        color: #2980b9;
     }
 
     /* Custom Scrollbar */
@@ -163,7 +226,7 @@
     }
 </style>
 
-<div class="container-fluid py-4 px-3 px-md-4">
+<div class="dashboard-page container-fluid py-4 px-3 px-md-4">
 
     <!-- Page Header -->
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
@@ -650,7 +713,7 @@ document.addEventListener('DOMContentLoaded', function () {
             labels: ['Ringan', 'Sedang', 'Berat'],
             datasets: [{
                 data: [kerusakanRingan, kerusakanSedang, kerusakanBerat],
-                backgroundColor: ['#38bdf8', '#facc15', '#f87171'],
+                backgroundColor: ['#8fc5e5', '#b9d9ee', '#5b9bd5'],
                 borderWidth: 2,
                 borderColor: '#ffffff',
                 hoverOffset: 10

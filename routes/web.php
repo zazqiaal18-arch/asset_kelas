@@ -15,9 +15,9 @@ use App\Http\Controllers\DashboardController;
 |--------------------------------------------------------------------------
 */
 
-// Redirect Halaman Utama ke Login jika belum masuk
+// Halaman utama aplikasi
 Route::get('/', function () {
-    return redirect()->route('login');
+    return view('welcome');
 });
 
 // ROUTE AUTHENTICATION (Guest / Belum Login)

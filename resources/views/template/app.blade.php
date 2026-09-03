@@ -1,82 +1,63 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-
-  <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>@yield('title', 'Admin Dashboard')</title>
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>@yield('title', 'Dashboard Inventaris')</title>
 
-  <!-- CSS Bootstrap & Template -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
-  <link rel="stylesheet" href="{{ asset('assets/vendors/bootstrap-icons/bootstrap-icons.css') }}">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
 
-  <!-- KODE PERBAIKAN TATA LETAK NAVBAR & SIDEBAR -->
   <style>
-
     body {
-      overflow-x: hidden;
       margin: 0;
-      padding: 0;
+      overflow-x: hidden;
+      background: #f4f7fb;
+      color: #1f2937;
     }
 
     .admin-shell {
       display: flex;
-      width: 100vw;
       min-height: 100vh;
-      overflow-x: hidden;
-    }
-
-    .admin-sidebar {
-      width: 260px;
-      flex-shrink: 0;
+      width: 100%;
     }
 
     .admin-main {
       flex: 1;
-      min-width: 0; /* Mencegah elemen kanan melebihi lebar layar */
+      min-width: 0;
       display: flex;
       flex-direction: column;
-      width: calc(100% - 260px);
-      overflow-x: hidden;
     }
 
-    .admin-main > header,
-    .admin-main > nav,
-    .admin-main .navbar {
-      width: 100%;
-      box-sizing: border-box;
+    .dashboard-content {
+      flex: 1;
+      padding: 1.5rem 1.5rem 2rem;
     }
 
-    .table td, .table th {
-      padding: 0.5rem 0.75rem !important;
-      vertical-align: middle;
+    .dashboard-content > .container-fluid {
+      padding: 0;
     }
 
-    .card-body {
-      padding: 1rem !important;
+    @media (max-width: 991.98px) {
+      .admin-shell {
+        display: block;
+      }
     }
   </style>
 </head>
-</head>
-
 <body>
   <div class="admin-shell">
     <div class="sidebar-backdrop" data-sidebar-close></div>
 
-    <!-- Sidebar Kiri -->
     @include('template.sidebar')
 
-    <!-- Area Kanan -->
     <div class="admin-main">
-      <!-- Navbar Atas -->
       @include('template.navbar')
 
-      <!-- Tempat Konten Berubah-ubah (Create / Dashboard / Tabel) -->
-      <main class="dashboard-content p-4">
+      <main class="dashboard-content">
         @yield('content')
       </main>
     </div>

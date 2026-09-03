@@ -1,36 +1,39 @@
-<style>
-    body {
-      overflow-x: hidden;
-      margin: 0;
-      padding: 0;
-    }
+<nav class="admin-navbar navbar navbar-expand-lg bg-white border-bottom shadow-sm">
+  <div class="container-fluid px-3 px-lg-4 py-2">
+    <div class="d-flex align-items-center gap-3">
+      <button class="btn btn-light border d-lg-none" type="button" data-sidebar-toggle aria-label="Buka menu">
+        <i class="bi bi-list"></i>
+      </button>
 
-    .admin-shell {
-      display: flex;
-      width: 100vw;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
+      <div>
+        <div class="text-uppercase small fw-bold text-primary mb-0">Inventory</div>
+        <div class="fw-semibold text-dark mb-0">Aset Kelas</div>
+      </div>
+    </div>
 
-    .admin-sidebar {
-      width: 260px;
-      flex-shrink: 0;
-    }
+    <div class="ms-auto d-flex align-items-center gap-2">
+      <button type="button" class="btn btn-light border shadow-sm" data-theme-toggle aria-label="Toggle theme">
+        <i data-theme-icon class="bi bi-sun"></i>
+      </button>
 
-    .admin-main {
-      flex: 1;
-      min-width: 0; /* Mencegah elemen kanan melebihi lebar layar */
-      display: flex;
-      flex-direction: column;
-      width: calc(100% - 260px);
-      overflow-x: hidden;
-    }
-
-    .admin-main > header,
-    .admin-main > nav,
-    .admin-main .navbar {
-      width: 100%;
-      box-sizing: border-box;
-    }
-  </style>
-</head>
+      <div class="dropdown">
+        <button class="btn btn-light border shadow-sm dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <img src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="{{ ucfirst(optional(auth()->user())->role ?? 'User') }}" class="avatar-sm rounded-circle border border-2 border-success" style="width: 32px; height: 32px; object-fit: cover;">
+          <span class="d-none d-sm-inline fw-semibold text-dark">{{ ucfirst(optional(auth()->user())->role ?? 'User') }}</span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">
+          <li><a class="dropdown-item" href="{{ route('dashboard') }}"><i class="bi bi-speedometer2 me-2"></i>Dashboard</a></li>
+          <li><hr class="dropdown-divider"></li>
+          <li>
+            <form action="{{ route('logout') }}" method="POST">
+              @csrf
+              <button type="submit" class="dropdown-item text-danger" onclick="return confirm('Yakin ingin keluar?')">
+                <i class="bi bi-box-arrow-right me-2"></i>Logout
+              </button>
+            </form>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
