@@ -51,6 +51,7 @@
         border-radius: 12px;
         box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         margin-bottom: 24px;
+        overflow: hidden;
     }
 
     .card-corporate .card-header {
@@ -67,6 +68,7 @@
     /* Table Styling */
     .table-corporate {
         margin-bottom: 0;
+        width: 100%;
     }
 
     .table-corporate th {
@@ -76,8 +78,8 @@
         text-transform: uppercase;
         font-size: 0.75rem;
         letter-spacing: 0.5px;
-        border-bottom: 1px solid var(--inv-border);
         padding: 12px 16px;
+        border-bottom: 1px solid var(--inv-border);
     }
 
     .table-corporate td {
@@ -102,7 +104,7 @@
     .badge-soft-danger  { background-color: #fee2e2; color: #991b1b; }
     .badge-soft-info    { background-color: #e0f2fe; color: #075985; }
 
-    /* Custom Scrollbar for tables */
+    /* Custom Scrollbar */
     .table-responsive::-webkit-scrollbar {
         height: 6px;
     }
@@ -131,7 +133,6 @@
 
     <!-- Metric Cards -->
     <div class="row g-3 mb-4">
-        <!-- Total Jenis Barang -->
         <div class="col-12 col-sm-6 col-xl-3">
             <div class="stat-card d-flex align-items-center">
                 <div class="stat-icon bg-primary bg-opacity-10 text-primary me-3">
@@ -144,7 +145,6 @@
             </div>
         </div>
 
-        <!-- Total Volume Unit -->
         <div class="col-12 col-sm-6 col-xl-3">
             <div class="stat-card d-flex align-items-center">
                 <div class="stat-icon bg-info bg-opacity-10 text-info me-3">
@@ -157,7 +157,6 @@
             </div>
         </div>
 
-        <!-- Unit Rusak -->
         <div class="col-12 col-sm-6 col-xl-3">
             <div class="stat-card d-flex align-items-center">
                 <div class="stat-icon bg-danger bg-opacity-10 text-danger me-3">
@@ -170,7 +169,6 @@
             </div>
         </div>
 
-        <!-- Est. Nilai Aset -->
         <div class="col-12 col-sm-6 col-xl-3">
             <div class="stat-card d-flex align-items-center">
                 <div class="stat-icon bg-success bg-opacity-10 text-success me-3">
@@ -226,10 +224,10 @@
                                 </td>
                                 <td class="text-end">
                                     <div class="btn-group btn-group-sm">
-                                        <a href="{{ route('barang.edit', $barang->id) }}" class="btn btn-light text-secondary" title="Edit">
+                                        <a href="{{ route('barang.edit', $barang->id_barang ?? $barang->id) }}" class="btn btn-light text-secondary" title="Edit">
                                             <i class="fas fa-pencil-alt"></i>
                                         </a>
-                                        <form action="{{ route('barang.destroy', $barang->id) }}" method="POST" onsubmit="return confirm('Hapus data ini?')" class="d-inline">
+                                        <form action="{{ route('barang.destroy', $barang->id_barang ?? $barang->id) }}" method="POST" onsubmit="return confirm('Hapus data ini?')" class="d-inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="btn btn-light text-danger" title="Hapus">
@@ -253,7 +251,7 @@
             </div>
         </div>
 
-        <!-- Sidebar Widgets (Chart & Laporan Kerusakan Terkini) -->
+        <!-- Sidebar Widgets -->
         <div class="col-12 col-lg-4">
             <!-- Ringkasan Kerusakan Widget -->
             <div class="card-corporate mb-4">
@@ -261,7 +259,7 @@
                     <span><i class="fas fa-chart-pie text-muted me-2"></i>Tingkat Kerusakan</span>
                 </div>
                 <div class="card-body p-3">
-                    <div style="max-height: 220px;" class="d-flex justify-content-center">
+                    <div style="height: 200px;" class="d-flex justify-content-center">
                         <canvas id="kerusakanChart"></canvas>
                     </div>
                 </div>
@@ -310,22 +308,22 @@
         new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: ['Ringan', 'Sedang', 'Berat'],
-                datasets: [{
-                    data: [
-                        {{ $kerusakanRingan ?? 0 }}, 
-                        {{ $kerusakanSedang ?? 0 }}, 
-                        {{ $kerusakanBerat ?? 0 }}
-                    ],
-                    backgroundColor: [
-                        '#38bdf8', // Light Blue / Info
-                        '#facc15', // Yellow / Warning
-                        '#f87171'  // Red / Danger
-                    ],
-                    borderWidth: 2,
-                    borderColor: '#ffffff'
-                }]
-            },
+    labels: ['Ringan', 'Sedang', 'Berat'],
+    datasets: [{
+        data: [
+            @json($kerusakanRingan ?? 0),
+            @json($kerusakanSedang ?? 0),
+            @json($kerusakanBerat ?? 0)
+        ],
+        backgroundColor: [
+            '#38bdf8',
+            '#facc15',
+            '#f87171'
+        ],
+        borderWidth: 2,
+        borderColor: '#ffffff'
+    }]
+}
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
