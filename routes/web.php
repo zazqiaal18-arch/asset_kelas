@@ -15,15 +15,10 @@ use App\Http\Controllers\DashboardController;
 |--------------------------------------------------------------------------
 */
 
-// Redirect Halaman Utama ke Login
+// Redirect Halaman Utama ke Login jika belum masuk
 Route::get('/', function () {
     return redirect()->route('login');
 });
-
-//dashboard
-// 1. Rute Dashboard Utama
-Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
-Route::get('/dashboard', [DashboardController::class, 'index']);
 
 // ROUTE AUTHENTICATION (Guest / Belum Login)
 Route::middleware('guest')->group(function () {
@@ -39,6 +34,13 @@ Route::middleware('guest')->group(function () {
     Route::get('/auth/google', [AuthController::class, 'redirectToGoogle'])->name('auth.google');
     Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback']);
 });
+
+// LOGOUT (Bisa dipanggil kapan saja saat user login)
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::get('/logout', [AuthController::class, 'logout']); // Jaga-jaga jika tombol logout di sidebar menggunakan tag <a> (GET)
+
+// ROUTE DASHBOARD
+Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 // ROUTE BARANG
 Route::get('/barang', [BarangController::class, 'index'])->name('barang.index');
