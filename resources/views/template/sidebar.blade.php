@@ -41,6 +41,15 @@
       <span class="nav-icon"><i class="bi bi-tools"></i></span>
       <span class="nav-text">Kerusakan Barang</span>
     </a>
+
+    <!-- Logout -->
+    <form action="{{ route('logout') }}" method="POST" class="d-inline">
+      @csrf
+      <button type="submit" class="nav-link border-0 bg-transparent text-danger w-100 text-start" onclick="return confirm('Yakin ingin keluar?')">
+        <span class="nav-icon"><i class="bi bi-box-arrow-right text-danger"></i></span>
+        <span class="nav-text fw-bold">Logout</span>
+      </button>
+    </form>
   </nav>
 
   <div class="sidebar-user">
