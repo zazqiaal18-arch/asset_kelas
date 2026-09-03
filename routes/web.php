@@ -79,3 +79,4 @@ Route::post('/kerusakan', [KerusakanController::class, 'store'])->name('kerusaka
 Route::get('/kerusakan/{id_kerusakan}/edit', [KerusakanController::class, 'edit'])->name('kerusakan.edit');
 Route::put('/kerusakan/{id_kerusakan}', [KerusakanController::class, 'update'])->name('kerusakan.update');
 Route::delete('/kerusakan/{id_kerusakan}', [KerusakanController::class, 'destroy'])->name('kerusakan.destroy');
+Route::delete('/kerusakan/{id_kerusakan}', [KerusakanController::class, 'show'])->name('kerusakan.show');

@@ -7,7 +7,7 @@
 
   <nav class="sidebar-nav">
     <!-- Dashboard -->
-    <a class="nav-link {{ request()->is('/') || request()->is('dashboard*') ? 'active' : '' }}" href="{{ url('/') }}">
+    <a class="nav-link {{ request()->is('/') || request()->is('dashboard*') ? 'active' : '' }}" href="{{ url('/dashboard') }}">
       <span class="nav-icon"><i class="bi bi-speedometer2"></i></span>
       <span class="nav-text">Dashboard</span>
     </a>

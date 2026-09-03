@@ -34,6 +34,12 @@ class KerusakanController extends Controller
         return redirect()->route('kerusakan.index')->with('success', 'Laporan kerusakan berhasil disimpan!');
     }
 
+     public function show($id_kerusakan)
+    {
+        $kerusakan = Kerusakan::with('barang')->findOrFail($id_kerusakan);
+        return view('kerusakan.show', compact('kerusakan'));
+    }
+
     public function edit($id_kerusakan)
     {
         $kerusakan = Kerusakan::findOrFail($id_kerusakan);

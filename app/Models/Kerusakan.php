@@ -1,4 +1,5 @@
 <?php
+// app/Models/Kerusakan.php
 
 namespace App\Models;
 
@@ -9,19 +10,40 @@ class Kerusakan extends Model
 {
     use HasFactory;
 
-    // Menentukan Primary Key kustom
     protected $primaryKey = 'id_kerusakan';
+    protected $table = 'kerusakans';
 
-    // Kolom-kolom yang diizinkan untuk diisi data
     protected $fillable = [
         'barang_id',
         'jumlah_rusak',
         'tingkat_kerusakan',
         'deskripsi_kerusakan',
+        'status_penanganan',
+        'tanggal_lapor',
+        'tanggal_selesai',
+        'foto_kerusakan',
+        'keterangan'
     ];
 
+    protected $casts = [
+        'tanggal_lapor' => 'datetime',
+        'tanggal_selesai' => 'datetime',
+    ];
+
+    // Relasi ke Barang
     public function barang()
     {
-        return $this->belongsTo(Barang::class, 'id_barang', 'id_barang');
+        return $this->belongsTo(Barang::class, 'barang_id', 'id_barang');
+    }
+
+    // Scope untuk filter
+    public function scopeBelumSelesai($query)
+    {
+        return $query->where('status_penanganan', '!=', 'Selesai');
+    }
+
+    public function scopeTingkat($query, $tingkat)
+    {
+        return $query->where('tingkat_kerusakan', $tingkat);
     }
 }
