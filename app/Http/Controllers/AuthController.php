@@ -26,7 +26,8 @@ class AuthController extends Controller
 
         if (Auth::attempt($request->only('email', 'password'))) {
             $request->session()->regenerate();
-            return redirect()->intended(route('barang.index'))->with('success', 'Berhasil Login!');
+            // ✅ Ubah ke dashboard
+            return redirect()->intended(route('dashboard'))->with('success', 'Berhasil Login!');
         }
 
         return back()->with('error', 'Email atau password salah!');
@@ -56,7 +57,8 @@ class AuthController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('barang.index')->with('success', 'Akun berhasil dibuat!');
+        // ✅ Ubah ke dashboard
+        return redirect()->route('dashboard')->with('success', 'Akun berhasil dibuat!');
     }
 
     // 5. Redirect ke Google
@@ -90,19 +92,11 @@ class AuthController extends Controller
 
             Auth::login($user);
 
-            return redirect()->route('barang.index')->with('success', 'Berhasil login dengan Google!');
+            // ✅ Ubah ke dashboard
+            return redirect()->route('dashboard')->with('success', 'Berhasil login dengan Google!');
+
         } catch (\Exception $e) {
             return redirect()->route('login')->with('error', 'Gagal login via Google. Silakan coba lagi.');
         }
-    }
-
-    // 7. Logout
-    public function logout(Request $request)
-    {
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
-        return redirect()->route('login')->with('success', 'Berhasil logout.');
     }
 }
