@@ -11,7 +11,7 @@ class BarangController extends Controller
     {
         $barangs = Barang::latest('id_barang')->get();
         $totalBarang = Barang::count();
-        return view('dashboard', compact('barangs','totalBarang'));
+        return view('barang.index', compact('barangs','totalBarang'));
     }
 
     public function create()
