@@ -76,7 +76,8 @@ Route::delete('/penyusutan/{id_penyusutan}', [PenyusutanController::class, 'dest
 Route::get('/kerusakan', [KerusakanController::class, 'index'])->name('kerusakan.index');
 Route::get('/kerusakan/create', [KerusakanController::class, 'create'])->name('kerusakan.create');
 Route::post('/kerusakan', [KerusakanController::class, 'store'])->name('kerusakan.store');
+Route::delete('/kerusakan/{id_kerusakan}', [KerusakanController::class, 'show'])->name('kerusakan.show');
 Route::get('/kerusakan/{id_kerusakan}/edit', [KerusakanController::class, 'edit'])->name('kerusakan.edit');
 Route::put('/kerusakan/{id_kerusakan}', [KerusakanController::class, 'update'])->name('kerusakan.update');
 Route::delete('/kerusakan/{id_kerusakan}', [KerusakanController::class, 'destroy'])->name('kerusakan.destroy');
-Route::delete('/kerusakan/{id_kerusakan}', [KerusakanController::class, 'show'])->name('kerusakan.show');
+
