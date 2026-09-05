@@ -378,7 +378,7 @@
                             <tr>
                                 <th>Kode</th>
                                 <th>Nama Barang</th>
-                                <th>Kategori</th>
+                                <th>Tanggal Beli</th>
                                 <th class="text-center">Jumlah</th>
                                 <th>Kondisi Utama</th>
                                 <th class="text-end">Aksi</th>
@@ -409,11 +409,9 @@
 
                                     </td>
 
-                                    <!-- Kategori -->
+                                    <!-- Tanggal beli -->
                                     <td>
-                                        <span class="badge badge-soft-info px-2 py-1">
-                                            {{ $barang->kategori ?? '-' }}
-                                        </span>
+                                        {{ $barang->tanggal_beli ? \Carbon\Carbon::parse($barang->tanggal_beli)->format('d-m-Y') : '-' }}
                                     </td>
 
                                     <!-- Jumlah -->
@@ -428,7 +426,7 @@
 
                                             <span class="badge badge-soft-warning px-2 py-1">
                                                 Ada Rusak
-                                                ({{ $barang->jumlah_rusak }})
+                                                ({{ $barang->kerusakans_sum_jumlah_rusak ?? 0 }})
                                             </span>
 
                                         @else

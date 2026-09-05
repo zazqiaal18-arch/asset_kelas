@@ -45,14 +45,6 @@
 
   </nav>
 
-  <div class="sidebar-user">
-    <img class="avatar-img avatar-md sidebar-user-avatar" src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="{{ optional(auth()->user())->name ?? 'User' }}">
-    <strong>{{ optional(auth()->user())->name ?? 'User' }}</strong>
-    <small>{{ ucfirst(optional(auth()->user())->role ?? 'User') }}</small>
-  </div>
 
-  <div class="sidebar-footer">
-    <span class="status-dot"></span>
-    <span class="sidebar-footer-text">System running smoothly</span>
-  </div>
+  
 </aside>

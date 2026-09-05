@@ -14,10 +14,13 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // 1. Ambil Data Ringkasan
-        $totalBarang      = Barang::count();
+        $barangs = Barang::withSum('kerusakans', 'jumlah_rusak')
+            ->latest('id_barang')
+            ->get();
+
+        $totalBarang      = $barangs->count();
         $totalKategori    = Kategori::count();
-        $totalUnitBarang  = Barang::sum('jumlah');
+        $totalUnitBarang  = $barangs->sum('jumlah');
         $totalBarangRusak = Kerusakan::sum('jumlah_rusak');
 
         // 2. Data Kerusakan untuk Chart
@@ -25,39 +28,35 @@ class DashboardController extends Controller
         $kerusakanSedang = Kerusakan::where('tingkat_kerusakan', 'Sedang')->sum('jumlah_rusak');
         $kerusakanBerat  = Kerusakan::where('tingkat_kerusakan', 'Berat')->sum('jumlah_rusak');
 
-        // 3. Perhitungan Sisa Nilai Aset
-        $penyusutans    = Penyusutan::with('barang')->get();
-        $totalNilaiAset = 0;
+        $penyusutans = Penyusutan::get()->keyBy('barang_id');
+        $totalNilaiAset = $barangs->sum(function ($barang) use ($penyusutans) {
+            $hargaBeli = (float) ($barang->harga_beli ?? 0);
+            $penyusutan = $penyusutans->get($barang->id_barang);
 
-        foreach ($penyusutans as $item) {
-            $hargaBeli = $item->barang->harga_beli ?? 0;
-            $tglBeli   = $item->barang->tanggal_beli ? Carbon::parse($item->barang->tanggal_beli) : null;
-
-            if ($tglBeli) {
-                $umurTahun = floor($tglBeli->diffInDays(now()) / 365);
-                $totalPenyusutanBerjalan = $item->penyusutan_per_tahun * $umurTahun;
-                $sisaNilai = max($item->nilai_residu, $hargaBeli - $totalPenyusutanBerjalan);
-            } else {
-                $sisaNilai = $hargaBeli;
+            if (!$penyusutan || !$barang->tanggal_beli) {
+                return $hargaBeli;
             }
-            $totalNilaiAset += $sisaNilai;
-        }
 
-        // 4. Data Preview
+            $umurTahun = floor(Carbon::parse($barang->tanggal_beli)->diffInDays(now()) / 365);
+            $nilaiBerjalan = $hargaBeli - ($penyusutan->penyusutan_per_tahun * $umurTahun);
+
+            return max((float) $penyusutan->nilai_residu, $nilaiBerjalan);
+        });
+
         $recentKerusakan = Kerusakan::with('barang')->latest()->take(5)->get();
-        $barangs         = Barang::latest('id_barang')->take(5)->get();
+        $barangsPreview  = $barangs->take(5);
 
-        return view('dashboard', compact(
-            'totalBarang',
-            'totalKategori',
-            'totalUnitBarang',
-            'totalBarangRusak',
-            'kerusakanRingan',
-            'kerusakanSedang',
-            'kerusakanBerat',
-            'totalNilaiAset',
-            'recentKerusakan',
-            'barangs'
-        ));
+        return view('dashboard', [
+            'totalBarang' => $totalBarang,
+            'totalKategori' => $totalKategori,
+            'totalUnitBarang' => $totalUnitBarang,
+            'totalBarangRusak' => $totalBarangRusak,
+            'kerusakanRingan' => $kerusakanRingan,
+            'kerusakanSedang' => $kerusakanSedang,
+            'kerusakanBerat' => $kerusakanBerat,
+            'totalNilaiAset' => $totalNilaiAset,
+            'recentKerusakan' => $recentKerusakan,
+            'barangs' => $barangsPreview,
+        ]);
     }
 }

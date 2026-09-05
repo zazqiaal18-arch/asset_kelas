@@ -14,31 +14,37 @@ class BarangSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('barangs')->insert([ // Tambahkan DB::table('nama_tabel')
+        $barangs = [
             [
                 'nama_barang'  => 'Laptop Asus Vivobook',
                 'jumlah'       => 5,
                 'tanggal_beli' => '2026-01-15',
                 'harga_beli'   => 8500000,
-                'created_at'   => now(),
-                'updated_at'   => now(),
             ],
             [
                 'nama_barang'  => 'Proyektor Epson',
                 'jumlah'       => 2,
                 'tanggal_beli' => '2026-02-10',
                 'harga_beli'   => 4500000,
-                'created_at'   => now(),
-                'updated_at'   => now(),
             ],
             [
                 'nama_barang'  => 'Mouse Wireless Logitech',
                 'jumlah'       => 10,
                 'tanggal_beli' => '2026-03-01',
                 'harga_beli'   => 150000,
-                'created_at'   => now(),
-                'updated_at'   => now(),
             ],
-        ]);
+        ];
+
+        foreach ($barangs as $data) {
+            DB::table('barangs')->updateOrInsert(
+                ['nama_barang' => $data['nama_barang']],
+                array_merge($data, ['updated_at' => now()])
+            );
+
+            $barang = DB::table('barangs')->where('nama_barang', $data['nama_barang'])->first();
+            DB::table('barangs')->where('id_barang', $barang->id_barang)->update([
+                'kode_barang' => 'BRG-' . str_pad($barang->id_barang, 4, '0', STR_PAD_LEFT),
+            ]);
+        }
     }
 }

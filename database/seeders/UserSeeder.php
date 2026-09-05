@@ -11,23 +11,26 @@ class UserSeeder extends Seeder
 {
     public function run(): void
     {
-        DB::table('users')->insert([
+        $users = [
             [
                 'name'           => 'Administrator',
                 'email'          => 'admin@gmail.com',
                 'password'       => Hash::make('password123'),
                 'remember_token' => Str::random(10),
-                'created_at'     => now(),
-                'updated_at'     => now(),
             ],
             [
                 'name'           => 'User Test',
                 'email'          => 'user@gmail.com',
                 'password'       => Hash::make('password123'),
                 'remember_token' => Str::random(10),
-                'created_at'     => now(),
-                'updated_at'     => now(),
             ],
-        ]);
+        ];
+
+        foreach ($users as $user) {
+            DB::table('users')->updateOrInsert(
+                ['email' => $user['email']],
+                array_merge($user, ['updated_at' => now()])
+            );
+        }
     }
 }

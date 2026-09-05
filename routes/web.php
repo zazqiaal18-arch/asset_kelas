@@ -70,6 +70,8 @@ Route::delete('/kategori/{id_kategori}', [KategoriController::class, 'destroy'])
 Route::get('/penyusutan', [PenyusutanController::class, 'index'])->name('penyusutan.index');
 Route::get('/penyusutan/create', [PenyusutanController::class, 'create'])->name('penyusutan.create');
 Route::post('/penyusutan', [PenyusutanController::class, 'store'])->name('penyusutan.store');
+Route::get('/penyusutan/{id_penyusutan}/edit', [PenyusutanController::class, 'edit'])->name('penyusutan.edit');
+Route::put('/penyusutan/{id_penyusutan}', [PenyusutanController::class, 'update'])->name('penyusutan.update');
 Route::delete('/penyusutan/{id_penyusutan}', [PenyusutanController::class, 'destroy'])->name('penyusutan.destroy');
 
 // ROUTE KERUSAKAN

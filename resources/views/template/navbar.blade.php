@@ -6,7 +6,7 @@
       </button>
 
       <div>
-        <div class="text-uppercase small fw-bold text-primary mb-0">Inventory</div>
+        <div class="text-uppercase small fw-bold text-primary mb-0">Inventaris</div>
         <div class="fw-semibold text-dark mb-0">Aset Kelas</div>
       </div>
     </div>
@@ -14,7 +14,6 @@
     <div class="ms-auto d-flex align-items-center gap-2">
       <div class="dropdown">
         <button class="btn btn-light border shadow-sm dropdown-toggle d-flex align-items-center gap-2" type="button" data-bs-toggle="dropdown" aria-expanded="false">
-          <img src="{{ asset('assets/images/avatar/avatar.jpg') }}" alt="{{ optional(auth()->user())->name ?? 'User' }}" class="avatar-sm rounded-circle border border-2 border-success" style="width: 32px; height: 32px; object-fit: cover;">
           <span class="d-none d-sm-inline fw-semibold text-dark">{{ optional(auth()->user())->name ?? 'User' }}</span>
         </button>
         <ul class="dropdown-menu dropdown-menu-end shadow border-0 mt-2">

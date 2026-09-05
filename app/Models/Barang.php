@@ -23,5 +23,10 @@ class Barang extends Model
     {
         return $this->hasMany(Stok::class, 'barang_id', 'id_barang');
     }
+
+    public function kerusakans()
+    {
+        return $this->hasMany(Kerusakan::class, 'barang_id', 'id_barang');
+    }
     
 }
