@@ -11,18 +11,22 @@
       <h3 class="fw-bold mb-1 theme-text-primary">Data Kategori</h3>
       <p class="mb-0 theme-text-secondary">Daftar seluruh kategori yang terdata.</p>
     </div>
-    <a href="{{ route('kategori.create') }}" class="btn btn-primary">
-      <i class="bi bi-plus-lg me-1"></i> Tambah Kategori Baru
-    </a>
+
+    {{-- Tombol Tambah Kategori Hanya Muncul untuk Admin --}}
+    @if(Auth::check() && Auth::user()->role === 'admin')
+      <a href="{{ route('kategori.create') }}" class="btn btn-primary">
+        <i class="bi bi-plus-lg me-1"></i> Tambah Kategori Baru
+      </a>
+    @endif
   </div>
 
-  <!-- Alert Success -->
-  @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
-      <strong>Berhasil!</strong> {{ session('success') }}
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-  @endif
+   <!-- Alert Success -->
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+            <strong>Berhasil!</strong> {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
 
   <!-- Table Card -->
   <div class="card border-0 theme-card shadow-sm">
@@ -44,17 +48,23 @@
                   <span class="badge theme-badge-kategori">{{ $item->nama_kategori }}</span>
                 </td>
                 <td class="text-end pe-4">
-                  <a href="{{ route('kategori.edit', $item->id_kategori) }}" class="btn btn-warning btn-sm me-1 fw-bold">
-                    <i class="bi bi-pencil-square"></i> Edit
-                  </a>
-                  
-                  <form action="{{ route('kategori.destroy', $item->id_kategori) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin mau hapus kategori ini?')">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger btn-sm">
-                      <i class="bi bi-trash"></i> Hapus
-                    </button>
-                  </form>
+                  {{-- Hanya Munculkan Tombol Edit dan Hapus Jika User Adalah Admin --}}
+                  @if(Auth::check() && Auth::user()->role === 'admin')
+                    <a href="{{ route('kategori.edit', $item->id_kategori) }}" class="btn btn-warning btn-sm me-1 fw-bold">
+                      <i class="bi bi-pencil-square"></i> Edit
+                    </a>
+                    
+                    <form action="{{ route('kategori.destroy', $item->id_kategori) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin mau hapus kategori ini?')">
+                      @csrf
+                      @method('DELETE')
+                      <button type="submit" class="btn btn-danger btn-sm">
+                        <i class="bi bi-trash"></i> Hapus
+                      </button>
+                    </form>
+                  @else
+                    {{-- Tampilan untuk User biasa --}}
+                    <span class="badge bg-secondary-subtle text-secondary">-</span>
+                  @endif
                 </td>
               </tr>
             @empty

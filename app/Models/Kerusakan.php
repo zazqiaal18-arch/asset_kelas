@@ -1,5 +1,4 @@
 <?php
-// app/Models/Kerusakan.php
 
 namespace App\Models;
 
@@ -10,10 +9,12 @@ class Kerusakan extends Model
 {
     use HasFactory;
 
-    protected $primaryKey = 'id_kerusakan';
     protected $table = 'kerusakans';
 
+    protected $primaryKey = 'id_kerusakan';
+
     protected $fillable = [
+        'user_id',
         'barang_id',
         'jumlah_rusak',
         'tingkat_kerusakan',
@@ -22,7 +23,7 @@ class Kerusakan extends Model
         'tanggal_lapor',
         'tanggal_selesai',
         'foto_kerusakan',
-        'keterangan'
+        'keterangan',
     ];
 
     protected $casts = [
@@ -30,20 +31,42 @@ class Kerusakan extends Model
         'tanggal_selesai' => 'datetime',
     ];
 
-    // Relasi ke Barang
+
+    // Relasi ke barang
     public function barang()
     {
-        return $this->belongsTo(Barang::class, 'barang_id', 'id_barang');
+        return $this->belongsTo(
+            Barang::class,
+            'barang_id',
+            'id_barang'
+        );
     }
 
-    // Scope untuk filter
+
+    // Relasi ke user/pelapor
+    public function user()
+    {
+        return $this->belongsTo(
+            User::class,
+            'user_id',
+            'id'
+        );
+    }
+
+
+    // Scope laporan yang belum selesai
     public function scopeBelumSelesai($query)
     {
         return $query->where('status_penanganan', '!=', 'Selesai');
     }
 
+
+    // Filter berdasarkan tingkat kerusakan
     public function scopeTingkat($query, $tingkat)
     {
-        return $query->where('tingkat_kerusakan', $tingkat);
+        return $query->where(
+            'tingkat_kerusakan',
+            $tingkat
+        );
     }
 }

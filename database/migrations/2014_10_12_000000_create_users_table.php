@@ -14,7 +14,7 @@ return new class extends Migration
     $table->string('email')->unique();
     $table->string('password')->nullable(); // Set nullable karena login via Google tidak pakai password
     $table->string('google_id')->nullable(); // Kolom simpan ID Google
-    $table->string('role')->default('admin');
+    $table->string('role')->default('user'); // Default otomatis 'user'
     $table->rememberToken();
     $table->timestamps();
 });

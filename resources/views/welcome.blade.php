@@ -76,6 +76,7 @@
                 border-radius: 12px;
                 font-weight: 700;
                 box-shadow: 0 12px 24px rgba(37, 99, 235, 0.22);
+                text-decoration: none;
             }
             .btn-secondary-custom {
                 background: white;
@@ -84,6 +85,7 @@
                 padding: 14px 24px;
                 border-radius: 12px;
                 font-weight: 700;
+                text-decoration: none;
             }
             .hero-right {
                 background: linear-gradient(180deg, #1d4ed8 0%, #2563eb 100%);
@@ -170,9 +172,23 @@
                             Sistem inventaris barang untuk memantau stok, penyusutan aset, kerusakan, dan data barang secara terorganisir dalam satu dashboard yang bersih dan mudah digunakan.
                         </p>
                         <div class="hero-actions">
-                            <a href="{{ route('login') }}" class="btn btn-primary-custom">Masuk ke Dashboard</a>
+                        @auth
+                            {{-- Jika SUDAH login, arahkan ke route dashboard (misal: route('dashboard') atau route('kategori.index')) --}}
+                            <a href="{{ route('dashboard') }}" class="btn btn-primary-custom">Masuk ke Dashboard</a>
+                            
+                            {{-- Optional: Tambahkan tombol logout jika ingin mempermudah testing --}}
+                            <form action="{{ route('logout') }}" method="POST" style="display:inline;">
+                                @csrf
+                                <button type="submit" class="btn btn-secondary-custom">Buat Akun</button>
+                            </form>
+                        @endauth
+
+                        @guest
+                            {{-- Jika BELUM login, tampilkan tombol Login & Register --}}
+                            <a href="{{ route('login') }}" class="btn btn-primary-custom">Masuk</a>
                             <a href="{{ route('register') }}" class="btn btn-secondary-custom">Buat Akun</a>
-                        </div>
+                        @endguest
+                    </div>
                     </div>
                     <div class="hero-right">
                         <div class="stat-panel">

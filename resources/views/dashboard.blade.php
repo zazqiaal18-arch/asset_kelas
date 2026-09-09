@@ -228,29 +228,23 @@
 
 <div class="dashboard-page container-fluid py-4 px-3 px-md-4">
 
-    <!-- Page Header -->
+   <!-- Page Header -->
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4">
         <div>
-            <h3 class="fw-bold mb-1" style="color: var(--inv-primary);">
-                Dashboard Inventaris
-            </h3>
-
-            <p class="text-muted small mb-0">
-                Ringkasan status barang dan laporan kerusakan terkini.
-            </p>
+            <h3 class="fw-bold mb-1" style="color: var(--inv-primary);">Dashboard Inventaris</h3>
+            <p class="text-muted small mb-0">Ringkasan status barang dan laporan kerusakan terkini.</p>
         </div>
 
         <div class="mt-3 mt-md-0">
-            <a href="{{ route('barang.create') }}"
-               class="btn btn-primary btn-sm px-3 shadow-sm rounded-pill">
-                <i class="fas fa-plus me-1"></i>
-                Tambah Barang
-            </a>
+            {{-- TARUH DI SINI: Pembungkus Auth untuk Tombol Tambah --}}
+            @if(Auth::check() && Auth::user()->role === 'admin')
+                <a href="{{ route('barang.create') }}" class="btn btn-primary btn-sm px-3 shadow-sm rounded-pill">
+                    <i class="bi bi-plus-lg me-1"></i> Tambah Barang
+                </a>
+            @endif
 
-            <a href="{{ route('kerusakan.create') }}"
-               class="btn btn-outline-danger btn-sm px-3 shadow-sm rounded-pill ms-2">
-                <i class="fas fa-exclamation-triangle me-1"></i>
-                Lapor Kerusakan
+            <a href="{{ route('kerusakan.create') }}" class="btn btn-outline-danger btn-sm px-3 shadow-sm rounded-pill ms-2">
+                <i class="bi bi-exclamation-triangle me-1"></i> Lapor Kerusakan
             </a>
         </div>
     </div>

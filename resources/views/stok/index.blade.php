@@ -11,9 +11,11 @@
       <h3 class="fw-bold mb-1 theme-text-primary">Data Stok Barang</h3>
       <p class="mb-0 theme-text-secondary">Daftar seluruh data stok masuk dan keluar barang.</p>
     </div>
+    @if(Auth::check() && Auth::user()->role === 'admin')
     <a href="{{ route('stok.create') }}" class="btn btn-primary">
-      <i class="bi bi-plus-lg me-1"></i> Tambah Data Stok
+        <i class="bi bi-plus-lg me-1"></i> Tambah Stok
     </a>
+@endif
   </div>
 
   <!-- Alert Success -->
@@ -68,18 +70,21 @@
                   {{ $item->keterangan ?? '-' }}
                 </td>
                 <td class="text-end pe-4">
-                  <a href="{{ route('stok.edit', $item->id_stok) }}" class="btn btn-warning btn-sm me-1 fw-bold">
-                    <i class="bi bi-pencil-square"></i> Edit
-                  </a>
-                  
-                  <form action="{{ route('stok.destroy', $item->id_stok) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin mau hapus data stok ini?')">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger btn-sm">
-                      <i class="bi bi-trash"></i> Hapus
-                    </button>
-                  </form>
-                </td>
+                  @if(Auth::check() && Auth::user()->role === 'admin')
+                      <a href="{{ route('stok.edit', $item->id_stok) }}" class="btn btn-warning btn-sm me-1 fw-bold">
+                          <i class="bi bi-pencil-square"></i> Edit
+                      </a>
+                      <form action="{{ route('stok.destroy', $item->id_stok) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin mau hapus data ini?')">
+                          @csrf
+                          @method('DELETE')
+                          <button type="submit" class="btn btn-danger btn-sm">
+                              <i class="bi bi-trash"></i> Hapus
+                          </button>
+                      </form>
+                  @else
+                      <span class="text-muted small">-</span>
+                  @endif
+              </td>
               </tr>
             @empty
               <tr>

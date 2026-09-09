@@ -11,18 +11,22 @@
       <h3 class="fw-bold mb-1 theme-text-primary">Data Masa Ekonomis &amp; Penyusutan Aset</h3>
       <p class="mb-0 theme-text-secondary">Daftar seluruh perhitungan masa ekonomis dan penyusutan aset.</p>
     </div>
-    <a href="{{ route('penyusutan.create') }}" class="btn btn-primary">
-      <i class="bi bi-plus-lg me-1"></i> Hitung Masa Ekonomis Baru
-    </a>
+    
+    {{-- Tombol Hitung Hanya Muncuk untuk Admin --}}
+    @if(Auth::check() && Auth::user()->role === 'admin')
+      <a href="{{ route('penyusutan.create') }}" class="btn btn-primary">
+        <i class="bi bi-plus-lg me-1"></i> Hitung Masa Ekonomis Baru
+      </a>
+    @endif
   </div>
 
-  <!-- Alert Success -->
-  @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
-      <strong>Berhasil!</strong> {{ session('success') }}
-      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-  @endif
+   <!-- Alert Success -->
+    @if(session('success'))
+        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+            <strong>Berhasil!</strong> {{ session('success') }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
 
   <!-- Table Card -->
   <div class="card border-0 theme-card shadow-sm">
@@ -97,17 +101,23 @@
                   </span>
                 </td>
                 <td class="text-end pe-4">
-                  <a href="{{ route('penyusutan.edit', $item->id_penyusutan) }}" class="btn btn-warning btn-sm me-1 fw-bold">
-                    <i class="bi bi-pencil-square"></i> Edit
-                  </a>
-                  
-                  <form action="{{ route('penyusutan.destroy', $item->id_penyusutan) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin mau hapus data perhitungan ini?')">
-                    @csrf
-                    @method('DELETE')
-                    <button type="submit" class="btn btn-danger btn-sm">
-                      <i class="bi bi-trash"></i> Hapus
-                    </button>
-                  </form>
+                  {{-- Hanya Munculkan Tombol Edit dan Hapus Jika User Adalah Admin --}}
+                  @if(Auth::check() && Auth::user()->role === 'admin')
+                    <a href="{{ route('penyusutan.edit', $item->id_penyusutan) }}" class="btn btn-warning btn-sm me-1 fw-bold">
+                      <i class="bi bi-pencil-square"></i> Edit
+                    </a>
+                    
+                    <form action="{{ route('penyusutan.destroy', $item->id_penyusutan) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin mau hapus data perhitungan ini?')">
+                      @csrf
+                      @method('DELETE')
+                      <button type="submit" class="btn btn-danger btn-sm">
+                        <i class="bi bi-trash"></i> Hapus
+                      </button>
+                    </form>
+                  @else
+                    {{-- Tampilan untuk User biasa --}}
+                    <span class="badge bg-secondary-subtle text-secondary">-</span>
+                  @endif
                 </td>
               </tr>
             @empty
