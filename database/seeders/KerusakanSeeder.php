@@ -31,7 +31,7 @@ class KerusakanSeeder extends Seeder
                 'barang_nama'         => 'Proyektor Epson',
                 'jumlah_rusak'        => 2,
                 'tingkat_kerusakan'   => 'Ringan',
-                'deskripsi_kerusakan' => 'Beberapa tombol pada keyboard tidak berfungsi atau macet.',
+                'deskripsi_kerusakan' => 'Lampu proyektor redup dan gambar yang diproyeksikan buram.',
             ],
         ];
 
@@ -43,13 +43,15 @@ class KerusakanSeeder extends Seeder
             }
 
             unset($data['barang_nama']);
+
             DB::table('kerusakans')->updateOrInsert(
                 [
-                    'barang_id' => $barang->id_barang,
+                    'barang_id'           => $barang->id_barang,
                     'deskripsi_kerusakan' => $data['deskripsi_kerusakan'],
                 ],
                 array_merge($data, [
-                    'barang_id' => $barang->id_barang,
+                    'barang_id'  => $barang->id_barang,
+                    'created_at' => now(),
                     'updated_at' => now(),
                 ])
             );

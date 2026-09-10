@@ -14,27 +14,38 @@ class PenyusutanSeeder extends Seeder
      */
     public function run()
     {
-        // Cari data barang
-        $laptop = DB::table('barangs')->where('nama_barang', 'like', '%Laptop%')->first();
-        $proyektor = DB::table('barangs')->where('nama_barang', 'like', '%Proyektor%')->first();
+        $items = [
+            [
+                'nama' => 'Laptop Asus Vivobook',
+                'masa_ekonomis' => 5,
+                'nilai_residu' => 500000,
+            ],
+            [
+                'nama' => 'Proyektor Epson',
+                'masa_ekonomis' => 3,
+                'nilai_residu' => 300000,
+            ],
+        ];
 
-        foreach ([
-            [$laptop, 5, 500000],
-            [$proyektor, 3, 300000],
-        ] as [$barang, $masaEkonomis, $nilaiResidu]) {
+        foreach ($items as $item) {
+            $barang = DB::table('barangs')->where('nama_barang', $item['nama'])->first();
+
             if (!$barang) {
                 continue;
             }
 
-            $penyusutanPerTahun = max(0, ($barang->harga_beli - $nilaiResidu) / $masaEkonomis);
+            // Hitung penyusutan per tahun
+            $hargaBeli = $barang->harga_beli ?? 0;
+            $penyusutanPerTahun = max(0, ($hargaBeli - $item['nilai_residu']) / $item['masa_ekonomis']);
 
             DB::table('penyusutans')->updateOrInsert(
                 ['barang_id' => $barang->id_barang],
                 [
-                    'masa_ekonomis' => $masaEkonomis,
-                    'nilai_residu' => $nilaiResidu,
+                    'masa_ekonomis'        => $item['masa_ekonomis'],
+                    'nilai_residu'         => $item['nilai_residu'],
                     'penyusutan_per_tahun' => $penyusutanPerTahun,
-                    'updated_at' => now(),
+                    'created_at'           => now(),
+                    'updated_at'           => now(),
                 ]
             );
         }
