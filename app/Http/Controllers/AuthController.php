@@ -92,22 +92,17 @@ class AuthController extends Controller
             ? 'admin'
             : 'user';
 
-        $user = User::create([
+        User::create([
             'name' => $request->name,
             'email' => $email,
             'password' => Hash::make($request->password),
             'role' => $role,
         ]);
 
-        // Login akun yang baru dibuat
-        Auth::login($user);
-
-        // Regenerate session
-        $request->session()->regenerate();
-
+        // Redirect ke halaman login dengan pesan sukses (tanpa login otomatis)
         return redirect()
-            ->route('dashboard')
-            ->with('success', 'Akun berhasil dibuat!');
+            ->route('login')
+            ->with('success', 'Registrasi berhasil! Silakan login dengan akun Anda.');
     }
 
 
