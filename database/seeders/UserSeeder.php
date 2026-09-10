@@ -16,12 +16,16 @@ class UserSeeder extends Seeder
                 'name'           => 'Administrator',
                 'email'          => 'admin@gmail.com',
                 'password'       => Hash::make('password123'),
+                'google_id'      => null,
+                'role'           => 'admin',
                 'remember_token' => Str::random(10),
             ],
             [
                 'name'           => 'User Test',
                 'email'          => 'user@gmail.com',
                 'password'       => Hash::make('password123'),
+                'google_id'      => null,
+                'role'           => 'user', // Ubah ke 'user' jika perannya sebagai user biasa
                 'remember_token' => Str::random(10),
             ],
         ];
@@ -29,7 +33,10 @@ class UserSeeder extends Seeder
         foreach ($users as $user) {
             DB::table('users')->updateOrInsert(
                 ['email' => $user['email']],
-                array_merge($user, ['updated_at' => now()])
+                array_merge($user, [
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ])
             );
         }
     }
