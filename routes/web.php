@@ -13,13 +13,6 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Middleware\AdminMiddleware;
 
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-*/
-
-
 // ========================================================================
 // HALAMAN UTAMA
 // ========================================================================
@@ -35,10 +28,7 @@ Route::get('/', function () {
 
 Route::middleware('guest')->group(function () {
 
-    // --------------------------------------------------------------------
     // REGISTER
-    // --------------------------------------------------------------------
-
     Route::get('/register', [AuthController::class, 'showRegisterForm'])
         ->name('register');
 
@@ -46,10 +36,7 @@ Route::middleware('guest')->group(function () {
         ->name('register.process');
 
 
-    // --------------------------------------------------------------------
     // LOGIN
-    // --------------------------------------------------------------------
-
     Route::get('/login', [AuthController::class, 'showLoginForm'])
         ->name('login');
 
@@ -57,10 +44,7 @@ Route::middleware('guest')->group(function () {
         ->name('login.process');
 
 
-    // --------------------------------------------------------------------
     // GOOGLE LOGIN
-    // --------------------------------------------------------------------
-
     Route::get('/auth/google', [AuthController::class, 'redirectToGoogle'])
         ->name('auth.google');
 
@@ -80,52 +64,71 @@ Route::post('/logout', [AuthController::class, 'logout'])
 
 // ========================================================================
 // ROUTE BERSAMA - ADMIN & USER
+// User : hanya melihat
+// Admin: melihat + mengelola
 // ========================================================================
 
 Route::middleware(['auth'])->group(function () {
 
-    // --------------------------------------------------------------------
+    // ====================================================================
     // DASHBOARD
-    // --------------------------------------------------------------------
+    // ====================================================================
 
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
 
 
-    // --------------------------------------------------------------------
-    // LIHAT DATA
-    // --------------------------------------------------------------------
+    // ====================================================================
+    // BARANG - DILIHAT ADMIN & USER
+    // ====================================================================
 
     Route::get('/barang', [BarangController::class, 'index'])
         ->name('barang.index');
 
+
+    // ====================================================================
+    // STOK - DILIHAT ADMIN & USER
+    // ====================================================================
+
     Route::get('/stok', [StokController::class, 'index'])
         ->name('stok.index');
 
+
+    // ====================================================================
+    // KATEGORI - DILIHAT ADMIN & USER
+    // ====================================================================
+
     Route::get('/kategori', [KategoriController::class, 'index'])
         ->name('kategori.index');
+
+
+    // ====================================================================
+    // PENYUSUTAN - DILIHAT ADMIN & USER
+    // ====================================================================
 
     Route::get('/penyusutan', [PenyusutanController::class, 'index'])
         ->name('penyusutan.index');
 
 
     // ====================================================================
-    // KERUSAKAN - USER & ADMIN
+    // KERUSAKAN - ADMIN & USER
     // ====================================================================
 
-    // Melihat laporan kerusakan
+    // Melihat laporan
     Route::get('/kerusakan', [KerusakanController::class, 'index'])
         ->name('kerusakan.index');
-
 
     // Form laporan kerusakan
     Route::get('/kerusakan/create', [KerusakanController::class, 'create'])
         ->name('kerusakan.create');
 
-
     // Menyimpan laporan kerusakan
     Route::post('/kerusakan', [KerusakanController::class, 'store'])
         ->name('kerusakan.store');
+
+    // Detail
+    Route::get('/kerusakan/{id_kerusakan}', [KerusakanController::class, 'show'])
+        ->name('kerusakan.show');
 
 });
 
@@ -137,7 +140,7 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth', AdminMiddleware::class])->group(function () {
 
     // ====================================================================
-    // BARANG
+    // BARANG - ADMIN
     // ====================================================================
 
     Route::get('/barang/create', [BarangController::class, 'create'])
@@ -157,7 +160,7 @@ Route::middleware(['auth', AdminMiddleware::class])->group(function () {
 
 
     // ====================================================================
-    // STOK
+    // STOK - ADMIN
     // ====================================================================
 
     Route::get('/stok/create', [StokController::class, 'create'])
@@ -177,7 +180,7 @@ Route::middleware(['auth', AdminMiddleware::class])->group(function () {
 
 
     // ====================================================================
-    // KATEGORI
+    // KATEGORI - ADMIN
     // ====================================================================
 
     Route::get('/kategori/create', [KategoriController::class, 'create'])
@@ -197,7 +200,7 @@ Route::middleware(['auth', AdminMiddleware::class])->group(function () {
 
 
     // ====================================================================
-    // PENYUSUTAN
+    // PENYUSUTAN - ADMIN
     // ====================================================================
 
     Route::get('/penyusutan/create', [PenyusutanController::class, 'create'])
@@ -220,69 +223,38 @@ Route::middleware(['auth', AdminMiddleware::class])->group(function () {
     // KERUSAKAN - ADMIN
     // ====================================================================
 
-    // --------------------------------------------------------------------
-    // Detail laporan
-    // --------------------------------------------------------------------
-
-    Route::get('/kerusakan/{id_kerusakan}', [KerusakanController::class, 'show'])
-        ->name('kerusakan.show');
-
-
-    // --------------------------------------------------------------------
-    // Edit laporan
-    // --------------------------------------------------------------------
-
+    // Edit
     Route::get('/kerusakan/{id_kerusakan}/edit', [KerusakanController::class, 'edit'])
         ->name('kerusakan.edit');
 
-
-    // --------------------------------------------------------------------
-    // Update laporan
-    // --------------------------------------------------------------------
-
+    // Update
     Route::put('/kerusakan/{id_kerusakan}', [KerusakanController::class, 'update'])
         ->name('kerusakan.update');
 
-
-    // --------------------------------------------------------------------
-    // Hapus laporan
-    // --------------------------------------------------------------------
-
+    // Hapus
     Route::delete('/kerusakan/{id_kerusakan}', [KerusakanController::class, 'destroy'])
         ->name('kerusakan.destroy');
 
 
     // ====================================================================
-    // PROSES LAPORAN KERUSAKAN
+    // PROSES KERUSAKAN
     // ====================================================================
 
-    // --------------------------------------------------------------------
-    // TERIMA LAPORAN
     // Menunggu -> Dikerjakan
-    // --------------------------------------------------------------------
-
     Route::put(
         '/kerusakan/{id_kerusakan}/terima',
         [KerusakanController::class, 'terima']
     )->name('kerusakan.terima');
 
 
-    // --------------------------------------------------------------------
-    // TOLAK LAPORAN
     // Menunggu -> Ditolak
-    // --------------------------------------------------------------------
-
     Route::put(
         '/kerusakan/{id_kerusakan}/tolak',
         [KerusakanController::class, 'tolak']
     )->name('kerusakan.tolak');
 
 
-    // --------------------------------------------------------------------
-    // SELESAIKAN LAPORAN
     // Dikerjakan -> Selesai
-    // --------------------------------------------------------------------
-
     Route::put(
         '/kerusakan/{id_kerusakan}/selesai',
         [KerusakanController::class, 'selesai']

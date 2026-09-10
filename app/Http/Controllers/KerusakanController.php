@@ -5,53 +5,56 @@ namespace App\Http\Controllers;
 use App\Models\Kerusakan;
 use App\Models\Barang;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class KerusakanController extends Controller
 {
     /**
      * Menampilkan laporan kerusakan
+     *
+     * ADMIN:
+     * - Melihat semua laporan
+     *
+     * USER:
+     * - Hanya melihat laporan miliknya sendiri
      */
     public function index()
     {
-        if (auth()->user()->role === 'admin') {
+        $user = Auth::user();
 
-            // ADMIN melihat semua laporan
+        if ($user->role === 'admin') {
+
+            // Admin melihat semua laporan
             $kerusakans = Kerusakan::with(['barang', 'user'])
                 ->latest('id_kerusakan')
                 ->get();
 
         } else {
 
-            // USER hanya melihat laporan miliknya
+            // User hanya melihat laporan yang dibuat oleh dirinya
             $kerusakans = Kerusakan::with('barang')
-                ->where('user_id', auth()->id())
+                ->where('user_id', $user->id)
                 ->latest('id_kerusakan')
                 ->get();
         }
 
-        return view(
-            'kerusakan.index',
-            compact('kerusakans')
-        );
+        return view('kerusakan.index', compact('kerusakans'));
     }
 
 
     /**
-     * Form laporan
+     * Form laporan kerusakan
      */
     public function create()
     {
         $barangs = Barang::all();
 
-        return view(
-            'kerusakan.create',
-            compact('barangs')
-        );
+        return view('kerusakan.create', compact('barangs'));
     }
 
 
     /**
-     * Simpan laporan
+     * Menyimpan laporan kerusakan
      */
     public function store(Request $request)
     {
@@ -60,38 +63,66 @@ class KerusakanController extends Controller
 
             'jumlah_rusak' => 'required|integer|min:1',
 
-            'tingkat_kerusakan' =>
-                'required|in:Ringan,Sedang,Berat',
+            'tingkat_kerusakan' => 'required|in:Ringan,Sedang,Berat',
 
-            'deskripsi_kerusakan' =>
-                'required|string',
+            'deskripsi_kerusakan' => 'required|string',
         ]);
 
 
+        /*
+        |--------------------------------------------------------------------------
+        | Pastikan ada user yang sedang login
+        |--------------------------------------------------------------------------
+        */
+
+        if (!Auth::check()) {
+            return redirect()
+                ->route('login')
+                ->with('error', 'Silakan login terlebih dahulu.');
+        }
+
+
+        $user = Auth::user();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Simpan laporan
+        |--------------------------------------------------------------------------
+        |
+        | user_id diambil langsung dari akun yang sedang login.
+        | Jadi user tidak bisa menentukan user_id sendiri dari form.
+        |
+        */
+
         Kerusakan::create([
+            'user_id' => $user->id,
 
-            // User yang membuat laporan
-            'user_id' => auth()->id(),
-
-            // Data laporan
             'barang_id' => $request->barang_id,
 
             'jumlah_rusak' => $request->jumlah_rusak,
 
-            'tingkat_kerusakan' =>
-                $request->tingkat_kerusakan,
+            'tingkat_kerusakan' => $request->tingkat_kerusakan,
 
-            'deskripsi_kerusakan' =>
-                $request->deskripsi_kerusakan,
+            'deskripsi_kerusakan' => $request->deskripsi_kerusakan,
 
-            // Status awal
+            // Status awal laporan
             'status_penanganan' => 'Menunggu',
 
-            // Tanggal laporan
+            // Waktu laporan dibuat
             'tanggal_lapor' => now(),
-
         ]);
 
+
+        /*
+        |--------------------------------------------------------------------------
+        | Redirect kembali ke halaman kerusakan
+        |--------------------------------------------------------------------------
+        |
+        | Karena index() sudah membedakan Admin dan User berdasarkan role,
+        | User akan melihat laporan miliknya sendiri.
+        |
+        */
 
         return redirect()
             ->route('kerusakan.index')
@@ -103,7 +134,7 @@ class KerusakanController extends Controller
 
 
     /**
-     * Detail laporan
+     * Detail laporan kerusakan
      */
     public function show($id_kerusakan)
     {
@@ -113,10 +144,18 @@ class KerusakanController extends Controller
         ])->findOrFail($id_kerusakan);
 
 
-        // User tidak boleh melihat laporan orang lain
+        $user = Auth::user();
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | User hanya boleh melihat laporan miliknya
+        |--------------------------------------------------------------------------
+        */
+
         if (
-            auth()->user()->role !== 'admin' &&
-            $kerusakan->user_id != auth()->id()
+            $user->role !== 'admin' &&
+            (int) $kerusakan->user_id !== (int) $user->id
         ) {
             abort(403);
         }
@@ -130,16 +169,14 @@ class KerusakanController extends Controller
 
 
     /**
-     * Edit laporan - ADMIN
+     * Edit laporan kerusakan
+     * Hanya ADMIN
      */
     public function edit($id_kerusakan)
     {
-        $kerusakan = Kerusakan::findOrFail(
-            $id_kerusakan
-        );
+        $kerusakan = Kerusakan::findOrFail($id_kerusakan);
 
         $barangs = Barang::all();
-
 
         return view(
             'kerusakan.edit',
@@ -152,47 +189,35 @@ class KerusakanController extends Controller
 
 
     /**
-     * Update laporan - ADMIN
+     * Update laporan kerusakan
+     * Hanya ADMIN
      */
     public function update(
         Request $request,
         $id_kerusakan
     ) {
-
         $request->validate([
-            'barang_id' =>
-                'required|exists:barangs,id_barang',
+            'barang_id' => 'required|exists:barangs,id_barang',
 
-            'jumlah_rusak' =>
-                'required|integer|min:1',
+            'jumlah_rusak' => 'required|integer|min:1',
 
-            'tingkat_kerusakan' =>
-                'required|in:Ringan,Sedang,Berat',
+            'tingkat_kerusakan' => 'required|in:Ringan,Sedang,Berat',
 
-            'deskripsi_kerusakan' =>
-                'required|string',
+            'deskripsi_kerusakan' => 'required|string',
         ]);
 
 
-        $kerusakan = Kerusakan::findOrFail(
-            $id_kerusakan
-        );
+        $kerusakan = Kerusakan::findOrFail($id_kerusakan);
 
 
         $kerusakan->update([
+            'barang_id' => $request->barang_id,
 
-            'barang_id' =>
-                $request->barang_id,
+            'jumlah_rusak' => $request->jumlah_rusak,
 
-            'jumlah_rusak' =>
-                $request->jumlah_rusak,
+            'tingkat_kerusakan' => $request->tingkat_kerusakan,
 
-            'tingkat_kerusakan' =>
-                $request->tingkat_kerusakan,
-
-            'deskripsi_kerusakan' =>
-                $request->deskripsi_kerusakan,
-
+            'deskripsi_kerusakan' => $request->deskripsi_kerusakan,
         ]);
 
 
@@ -206,13 +231,12 @@ class KerusakanController extends Controller
 
 
     /**
-     * Hapus laporan - ADMIN
+     * Hapus laporan kerusakan
+     * Hanya ADMIN
      */
     public function destroy($id_kerusakan)
     {
-        $kerusakan = Kerusakan::findOrFail(
-            $id_kerusakan
-        );
+        $kerusakan = Kerusakan::findOrFail($id_kerusakan);
 
         $kerusakan->delete();
 
@@ -233,21 +257,28 @@ class KerusakanController extends Controller
 
     /**
      * ADMIN menerima laporan
+     *
+     * Menunggu -> Dikerjakan
      */
     public function terima($id_kerusakan)
     {
-        $kerusakan = Kerusakan::findOrFail(
-            $id_kerusakan
-        );
+        $kerusakan = Kerusakan::findOrFail($id_kerusakan);
+
+
+        // Hanya laporan Menunggu yang bisa diterima
+        if ($kerusakan->status_penanganan !== 'Menunggu') {
+            return back()->with(
+                'error',
+                'Laporan ini tidak dapat diterima karena statusnya sudah berubah.'
+            );
+        }
 
 
         $kerusakan->update([
-
             'status_penanganan' => 'Dikerjakan',
 
             'keterangan' =>
                 'Laporan diterima dan sedang dikerjakan.',
-
         ]);
 
 
@@ -260,31 +291,36 @@ class KerusakanController extends Controller
 
     /**
      * ADMIN menolak laporan
+     *
+     * Menunggu -> Ditolak
      */
     public function tolak(
         Request $request,
         $id_kerusakan
     ) {
-
         $request->validate([
-            'keterangan' =>
-                'nullable|string|max:1000',
+            'keterangan' => 'nullable|string|max:1000',
         ]);
 
 
-        $kerusakan = Kerusakan::findOrFail(
-            $id_kerusakan
-        );
+        $kerusakan = Kerusakan::findOrFail($id_kerusakan);
+
+
+        // Hanya laporan Menunggu yang bisa ditolak
+        if ($kerusakan->status_penanganan !== 'Menunggu') {
+            return back()->with(
+                'error',
+                'Laporan ini tidak dapat ditolak karena statusnya sudah berubah.'
+            );
+        }
 
 
         $kerusakan->update([
-
             'status_penanganan' => 'Ditolak',
 
             'keterangan' =>
                 $request->keterangan
                 ?: 'Laporan ditolak oleh admin.',
-
         ]);
 
 
@@ -297,23 +333,30 @@ class KerusakanController extends Controller
 
     /**
      * ADMIN menyelesaikan laporan
+     *
+     * Dikerjakan -> Selesai
      */
     public function selesai($id_kerusakan)
     {
-        $kerusakan = Kerusakan::findOrFail(
-            $id_kerusakan
-        );
+        $kerusakan = Kerusakan::findOrFail($id_kerusakan);
+
+
+        // Hanya laporan Dikerjakan yang bisa diselesaikan
+        if ($kerusakan->status_penanganan !== 'Dikerjakan') {
+            return back()->with(
+                'error',
+                'Laporan ini belum berstatus Dikerjakan.'
+            );
+        }
 
 
         $kerusakan->update([
-
             'status_penanganan' => 'Selesai',
 
             'tanggal_selesai' => now(),
 
             'keterangan' =>
                 'Kerusakan telah selesai ditangani.',
-
         ]);
 
 

@@ -21,7 +21,6 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-
     public function login(Request $request)
     {
         $request->validate([
@@ -29,55 +28,40 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
+        // Rapikan email
+        $email = strtolower(trim($request->email));
 
-        if (!Auth::attempt([
-            'email' => $request->email,
-            'password' => $request->password,
-        ])) {
+        // Cari user berdasarkan email
+        $user = User::where('email', $email)->first();
 
+        // Cek user dan password
+        if (!$user || !Hash::check($request->password, $user->password)) {
             return back()
                 ->withInput($request->only('email'))
                 ->with('error', 'Email atau password salah!');
         }
 
+        // Pastikan role valid
+        if (!in_array($user->role, ['admin', 'user'])) {
+            return back()
+                ->withInput($request->only('email'))
+                ->with('error', 'Role akun tidak valid. Hubungi administrator.');
+        }
 
-        // Regenerate session untuk keamanan
+        // Login user yang benar
+        Auth::login($user);
+
+        // Regenerate session
         $request->session()->regenerate();
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | REDIRECT BERDASARKAN ROLE
-        |--------------------------------------------------------------------------
-        */
-
-        if (Auth::user()->role === 'admin') {
-
-            return redirect()
-                ->route('dashboard')
-                ->with('success', 'Berhasil login sebagai Admin!');
-
-        }
-
-
-        if (Auth::user()->role === 'user') {
-
-            return redirect()
-                ->route('dashboard')
-                ->with('success', 'Berhasil login!');
-
-        }
-
-
-        // Jika role tidak dikenal
-        Auth::logout();
-
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-
         return redirect()
-            ->route('login')
-            ->with('error', 'Role akun tidak valid. Hubungi administrator.');
+            ->route('dashboard')
+            ->with(
+                'success',
+                $user->role === 'admin'
+                    ? 'Berhasil login sebagai Admin!'
+                    : 'Berhasil login!'
+            );
     }
 
 
@@ -92,7 +76,6 @@ class AuthController extends Controller
         return view('auth.register');
     }
 
-
     public function register(Request $request)
     {
         $request->validate([
@@ -101,30 +84,26 @@ class AuthController extends Controller
             'password' => 'required|min:6|confirmed',
         ]);
 
+        $email = strtolower(trim($request->email));
 
-        /*
-        |--------------------------------------------------------------------------
-        | SEMUA REGISTRASI BARU = USER
-        |--------------------------------------------------------------------------
-        |
-        | Admin TIDAK dibuat melalui halaman register.
-        | Ini lebih aman karena user tidak bisa membuat dirinya sendiri
-        | menjadi admin.
-        |
-        */
+        // Guru = Admin
+        // Selain guru = User
+        $role = str_ends_with($email, '@guru.smk.id')
+            ? 'admin'
+            : 'user';
 
         $user = User::create([
             'name' => $request->name,
-            'email' => strtolower(trim($request->email)),
+            'email' => $email,
             'password' => Hash::make($request->password),
-            'role' => 'user',
+            'role' => $role,
         ]);
 
-
+        // Login akun yang baru dibuat
         Auth::login($user);
 
+        // Regenerate session
         $request->session()->regenerate();
-
 
         return redirect()
             ->route('dashboard')
@@ -143,16 +122,13 @@ class AuthController extends Controller
         return Socialite::driver('google')->redirect();
     }
 
-
     public function handleGoogleCallback()
     {
         try {
 
             $googleUser = Socialite::driver('google')->user();
 
-
             $email = strtolower(trim($googleUser->email));
-
 
             /*
             |--------------------------------------------------------------------------
@@ -164,32 +140,35 @@ class AuthController extends Controller
                 ->orWhere('email', $email)
                 ->first();
 
-
             /*
             |--------------------------------------------------------------------------
             | USER BARU
             |--------------------------------------------------------------------------
-            |
-            | Google login baru selalu dibuat sebagai USER.
-            | Jangan otomatis memberikan role admin dari email.
-            |
             */
 
             if (!$user) {
+
+                $role = str_ends_with($email, '@guru.smk.id')
+                    ? 'admin'
+                    : 'user';
 
                 $user = User::create([
                     'name' => $googleUser->name,
                     'email' => $email,
                     'google_id' => $googleUser->id,
-                    'role' => 'user',
+                    'role' => $role,
                 ]);
 
             } else {
 
                 /*
                 |--------------------------------------------------------------------------
-                | UPDATE GOOGLE ID JIKA BELUM ADA
+                | USER LAMA
                 |--------------------------------------------------------------------------
+                |
+                | Role TIDAK diubah.
+                | Role tetap mengikuti database.
+                |
                 */
 
                 if (!$user->google_id) {
@@ -197,11 +176,8 @@ class AuthController extends Controller
                     $user->update([
                         'google_id' => $googleUser->id,
                     ]);
-
                 }
-
             }
-
 
             /*
             |--------------------------------------------------------------------------
@@ -211,20 +187,11 @@ class AuthController extends Controller
 
             Auth::login($user);
 
-
-            /*
-            |--------------------------------------------------------------------------
-            | REGENERATE SESSION
-            |--------------------------------------------------------------------------
-            */
-
             request()->session()->regenerate();
-
 
             return redirect()
                 ->route('dashboard')
                 ->with('success', 'Berhasil login dengan Google!');
-
 
         } catch (\Exception $e) {
 
@@ -248,11 +215,9 @@ class AuthController extends Controller
     {
         Auth::logout();
 
-
         $request->session()->invalidate();
 
         $request->session()->regenerateToken();
-
 
         return redirect()
             ->route('login')

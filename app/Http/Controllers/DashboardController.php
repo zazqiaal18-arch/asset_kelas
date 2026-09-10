@@ -14,159 +14,148 @@ class DashboardController extends Controller
     {
         $user = auth()->user();
 
+        // ================================================================
+        // DATA BARANG
+        // ADMIN & USER SAMA-SAMA BOLEH MELIHAT
+        // ================================================================
 
-        /*
-        |--------------------------------------------------------------------------
-        | DASHBOARD USER
-        |--------------------------------------------------------------------------
-        */
+        $barangs = Barang::withSum(
+                'kerusakans',
+                'jumlah_rusak'
+            )
+            ->latest('id_barang')
+            ->get();
 
-        if ($user->role === 'user') {
+        $totalBarang = $barangs->count();
 
-            // Hanya mengambil laporan milik user yang sedang login
-            $kerusakansUser = Kerusakan::with('barang')
-                ->where('user_id', $user->id)
-                ->latest('id_kerusakan')
-                ->get();
+        $totalKategori = Kategori::count();
 
-
-            return view('dashboard', [
-
-                'isAdmin' => false,
-
-                'kerusakansUser' => $kerusakansUser,
-
-                'totalLaporanUser' => $kerusakansUser->count(),
-
-                'totalMenungguUser' => $kerusakansUser
-                    ->where('status_penanganan', 'Menunggu')
-                    ->count(),
-
-                'totalDikerjakanUser' => $kerusakansUser
-                    ->where('status_penanganan', 'Dikerjakan')
-                    ->count(),
-
-                'totalSelesaiUser' => $kerusakansUser
-                    ->where('status_penanganan', 'Selesai')
-                    ->count(),
-
-                'totalDitolakUser' => $kerusakansUser
-                    ->where('status_penanganan', 'Ditolak')
-                    ->count(),
-
-            ]);
-        }
+        $totalUnitBarang = $barangs->sum('jumlah');
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | DASHBOARD ADMIN
-        |--------------------------------------------------------------------------
-        */
+        // ================================================================
+        // TOTAL BARANG RUSAK
+        // ================================================================
 
         if ($user->role === 'admin') {
 
-            $barangs = Barang::withSum(
-                    'kerusakans',
-                    'jumlah_rusak'
-                )
-                ->latest('id_barang')
-                ->get();
-
-
-            $totalBarang = $barangs->count();
-
-            $totalKategori = Kategori::count();
-
-            $totalUnitBarang = $barangs->sum('jumlah');
-
+            // Admin melihat seluruh kerusakan
             $totalBarangRusak = Kerusakan::sum('jumlah_rusak');
 
+        } else {
 
-            /*
-            |--------------------------------------------------------------------------
-            | DATA KERUSAKAN CHART
-            |--------------------------------------------------------------------------
-            */
+            // User hanya melihat jumlah kerusakan dari laporannya sendiri
+            $totalBarangRusak = Kerusakan::where(
+                'user_id',
+                $user->id
+            )->sum('jumlah_rusak');
+        }
+
+
+        // ================================================================
+        // CHART KERUSAKAN
+        // ================================================================
+
+        if ($user->role === 'admin') {
 
             $kerusakanRingan = Kerusakan::where(
                 'tingkat_kerusakan',
                 'Ringan'
             )->sum('jumlah_rusak');
 
-
             $kerusakanSedang = Kerusakan::where(
                 'tingkat_kerusakan',
                 'Sedang'
             )->sum('jumlah_rusak');
-
 
             $kerusakanBerat = Kerusakan::where(
                 'tingkat_kerusakan',
                 'Berat'
             )->sum('jumlah_rusak');
 
+        } else {
 
-            /*
-            |--------------------------------------------------------------------------
-            | PENYUSUTAN
-            |--------------------------------------------------------------------------
-            */
+            $kerusakanRingan = Kerusakan::where(
+                'user_id',
+                $user->id
+            )
+            ->where('tingkat_kerusakan', 'Ringan')
+            ->sum('jumlah_rusak');
 
-            $penyusutans = Penyusutan::get()
-                ->keyBy('barang_id');
+            $kerusakanSedang = Kerusakan::where(
+                'user_id',
+                $user->id
+            )
+            ->where('tingkat_kerusakan', 'Sedang')
+            ->sum('jumlah_rusak');
 
-
-            $totalNilaiAset = $barangs->sum(
-                function ($barang) use ($penyusutans) {
-
-                    $hargaBeli = (float) (
-                        $barang->harga_beli ?? 0
-                    );
-
-
-                    $penyusutan = $penyusutans->get(
-                        $barang->id_barang
-                    );
-
-
-                    if (
-                        !$penyusutan ||
-                        !$barang->tanggal_beli
-                    ) {
-                        return $hargaBeli;
-                    }
+            $kerusakanBerat = Kerusakan::where(
+                'user_id',
+                $user->id
+            )
+            ->where('tingkat_kerusakan', 'Berat')
+            ->sum('jumlah_rusak');
+        }
 
 
-                    $umurTahun = floor(
-                        Carbon::parse(
-                            $barang->tanggal_beli
-                        )->diffInDays(now()) / 365
-                    );
+        // ================================================================
+        // PENYUSUTAN
+        // ================================================================
+
+        $penyusutans = Penyusutan::get()
+            ->keyBy('barang_id');
 
 
-                    $nilaiBerjalan =
-                        $hargaBeli -
-                        (
-                            $penyusutan->penyusutan_per_tahun
-                            * $umurTahun
-                        );
+        $totalNilaiAset = $barangs->sum(
+            function ($barang) use ($penyusutans) {
+
+                $hargaBeli = (float) (
+                    $barang->harga_beli ?? 0
+                );
+
+                $penyusutan = $penyusutans->get(
+                    $barang->id_barang
+                );
 
 
-                    return max(
-                        (float) $penyusutan->nilai_residu,
-                        $nilaiBerjalan
-                    );
+                if (
+                    !$penyusutan ||
+                    !$barang->tanggal_beli
+                ) {
+                    return $hargaBeli;
                 }
-            );
 
 
-            /*
-            |--------------------------------------------------------------------------
-            | LAPORAN TERBARU
-            |--------------------------------------------------------------------------
-            */
+                $umurTahun = floor(
+                    Carbon::parse(
+                        $barang->tanggal_beli
+                    )->diffInDays(now()) / 365
+                );
 
+
+                $nilaiBerjalan =
+                    $hargaBeli -
+                    (
+                        $penyusutan->penyusutan_per_tahun
+                        * $umurTahun
+                    );
+
+
+                return max(
+                    (float) $penyusutan->nilai_residu,
+                    $nilaiBerjalan
+                );
+            }
+        );
+
+
+        // ================================================================
+        // LAPORAN KERUSAKAN TERBARU
+        // ================================================================
+
+        if ($user->role === 'admin') {
+
+            // Admin melihat laporan semua user
             $recentKerusakan = Kerusakan::with([
                     'barang',
                     'user'
@@ -175,55 +164,41 @@ class DashboardController extends Controller
                 ->take(5)
                 ->get();
 
+        } else {
 
-            $barangsPreview = $barangs->take(5);
-
-
-            return view('dashboard', [
-
-                'isAdmin' => true,
-
-                'totalBarang' => $totalBarang,
-
-                'totalKategori' => $totalKategori,
-
-                'totalUnitBarang' => $totalUnitBarang,
-
-                'totalBarangRusak' => $totalBarangRusak,
-
-                'kerusakanRingan' => $kerusakanRingan,
-
-                'kerusakanSedang' => $kerusakanSedang,
-
-                'kerusakanBerat' => $kerusakanBerat,
-
-                'totalNilaiAset' => $totalNilaiAset,
-
-                'recentKerusakan' => $recentKerusakan,
-
-                'barangs' => $barangsPreview,
-
-            ]);
+            // User hanya melihat laporan miliknya
+            $recentKerusakan = Kerusakan::with('barang')
+                ->where('user_id', $user->id)
+                ->latest('id_kerusakan')
+                ->take(5)
+                ->get();
         }
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | ROLE TIDAK VALID
-        |--------------------------------------------------------------------------
-        */
+        // ================================================================
+        // PREVIEW BARANG
+        // ================================================================
 
-        Auth::logout();
+        $barangsPreview = $barangs->take(5);
 
-        request()->session()->invalidate();
 
-        request()->session()->regenerateToken();
+        // ================================================================
+        // KIRIM SEMUA DATA KE 1 DASHBOARD
+        // ================================================================
 
-        return redirect()
-            ->route('login')
-            ->with(
-                'error',
-                'Role akun tidak valid. Hubungi administrator.'
-            );
+        return view('dashboard', [
+
+            'isAdmin' => $user->role === 'admin',
+            'totalBarang' => $totalBarang,
+            'totalKategori' => $totalKategori,
+            'totalUnitBarang' => $totalUnitBarang,
+            'totalBarangRusak' => $totalBarangRusak,
+            'kerusakanRingan' => $kerusakanRingan,
+            'kerusakanSedang' => $kerusakanSedang,
+            'kerusakanBerat' => $kerusakanBerat,
+            'totalNilaiAset' => $totalNilaiAset,
+            'recentKerusakan' => $recentKerusakan,
+            'barangs' => $barangsPreview,
+        ]);
     }
 }
